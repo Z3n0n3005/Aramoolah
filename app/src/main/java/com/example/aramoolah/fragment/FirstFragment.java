@@ -1,4 +1,4 @@
-package com.example.aramoolah;
+package com.example.aramoolah.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.aramoolah.R;
 import com.example.aramoolah.databinding.FragmentFirstBinding;
 
 public class FirstFragment extends Fragment {
