@@ -1,7 +1,8 @@
-package com.example.aramoolah.data;
+package com.example.aramoolah.repository;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.aramoolah.data.TransactionDao;
 import com.example.aramoolah.model.Transaction;
 
 import java.util.List;
@@ -12,15 +13,15 @@ public class TransactionRepository {
         this.transactionDao = transactionDao;
     }
     public void updateTransaction(Transaction transaction){
-        updateTransaction(transaction);
+        transactionDao.updateTransaction(transaction);
     }
     public void deleteTransaction(Transaction transaction){
-        deleteTransaction(transaction);
+        transactionDao.deleteTransaction(transaction);
     }
     public void addTransaction(Transaction transaction){
-        addTransaction(transaction);
+        transactionDao.addTransaction(transaction);
     }
-    public LiveData<List<Transaction>> getAllTransaction(Transaction transaction){
-        return getAllTransaction(transaction);
+    public LiveData<List<Transaction>> getAllTransaction(){
+        return transactionDao.getAllTransaction();
     }
 }
