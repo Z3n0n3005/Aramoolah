@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.room'
+    namespace 'com.example.aramoolah'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.room"
+        applicationId "com.example.aramoolah"
         minSdk 26
         targetSdk 33
         versionCode 1
@@ -30,6 +30,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+
 }
 
 dependencies {

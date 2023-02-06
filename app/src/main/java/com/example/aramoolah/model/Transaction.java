@@ -5,7 +5,9 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "transaction")
+import java.time.LocalDateTime;
+
+@Entity(tableName = "transaction_table")
 public class Transaction {
     @PrimaryKey(autoGenerate = true)
     int transactionId;
@@ -16,6 +18,8 @@ public class Transaction {
     TransactionType transactionType;
     //TODO: learn foreignkey
     int itemId;
+    LocalDateTime dateTime;
 
+    public Transaction(){}
 
 }
