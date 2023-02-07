@@ -12,6 +12,7 @@ import java.util.Currency;
 public class Wallet {
     @PrimaryKey(autoGenerate = true)
     int walletId;
+    int userId;
     String firstName;
     String middleName;
     String lastName;
