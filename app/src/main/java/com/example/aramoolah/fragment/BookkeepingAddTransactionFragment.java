@@ -7,14 +7,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.aramoolah.R;
-import com.example.aramoolah.databinding.FragmentSecondBinding;
+import com.example.aramoolah.databinding.FragmentBookkeepingAddTransactionBinding;
 
-public class SecondFragment extends Fragment {
+public class BookkeepingAddTransactionFragment extends Fragment {
 
-    private FragmentSecondBinding binding;
+    private FragmentBookkeepingAddTransactionBinding binding;
 
     @Override
     public View onCreateView(
@@ -22,7 +20,7 @@ public class SecondFragment extends Fragment {
             Bundle savedInstanceState
     ) {
 
-        binding = FragmentSecondBinding.inflate(inflater, container, false);
+        binding = FragmentBookkeepingAddTransactionBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
     }
