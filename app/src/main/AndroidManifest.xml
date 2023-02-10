@@ -12,7 +12,7 @@
         android:theme="@style/Theme.Aramoolah"
         tools:targetApi="31">
         <activity
-            android:name=".BookkeepingActivity"
+            android:name=".activity.BookkeepingActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Aramoolah.NoActionBar">
