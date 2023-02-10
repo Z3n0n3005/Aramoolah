@@ -5,17 +5,18 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "transaction")
+import java.time.LocalDateTime;
+
+@Entity(tableName = "transaction_table")
 public class Transaction {
     @PrimaryKey(autoGenerate = true)
-    int transactionId;
+    public int transactionId;
     //TODO: add foreign key
-    int walletId;
+    public int walletId;
     //TODO: learn typeconverter
-    @Embedded
-    TransactionType transactionType;
+    public TransactionType transactionType;
     //TODO: learn foreignkey
-    int itemId;
-
+    public int itemId;
+    public LocalDateTime dateTime;
 
 }
