@@ -8,7 +8,7 @@ import com.example.aramoolah.model.Item;
 import java.util.List;
 
 public class ItemRepository {
-    private ItemDao itemDao;
+    public ItemDao itemDao;
     public ItemRepository(ItemDao itemDao){
         this.itemDao = itemDao;
     }

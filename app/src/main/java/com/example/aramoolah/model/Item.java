@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "item_table")
 public class Item{
     @PrimaryKey(autoGenerate = true)
-    int itemId;
-    String name;
-    int cost;
-    ItemCategory itemCategory;
+    public int itemId;
+    public String name;
+    public int cost;
+    public ItemCategory itemCategory;
 }

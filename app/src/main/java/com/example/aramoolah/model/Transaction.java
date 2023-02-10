@@ -10,16 +10,13 @@ import java.time.LocalDateTime;
 @Entity(tableName = "transaction_table")
 public class Transaction {
     @PrimaryKey(autoGenerate = true)
-    int transactionId;
+    public int transactionId;
     //TODO: add foreign key
-    int walletId;
+    public int walletId;
     //TODO: learn typeconverter
-    @Embedded
-    TransactionType transactionType;
+    public TransactionType transactionType;
     //TODO: learn foreignkey
-    int itemId;
-    LocalDateTime dateTime;
-
-    public Transaction(){}
+    public int itemId;
+    public LocalDateTime dateTime;
 
 }

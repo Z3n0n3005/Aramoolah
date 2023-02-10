@@ -9,10 +9,6 @@ import org.javamoney.moneta.Money;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Currency;
-
-import javax.money.CurrencyUnit;
-import javax.money.Monetary;
 
 public class Converter {
     // Transaction
