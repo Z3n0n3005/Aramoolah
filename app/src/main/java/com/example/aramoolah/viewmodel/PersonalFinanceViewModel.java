@@ -10,13 +10,17 @@ import com.example.aramoolah.data.ItemDao;
 import com.example.aramoolah.data.ItemDatabase;
 import com.example.aramoolah.data.TransactionDao;
 import com.example.aramoolah.data.TransactionDatabase;
+import com.example.aramoolah.data.UserDao;
+import com.example.aramoolah.data.UserDatabase;
 import com.example.aramoolah.data.WalletDao;
 import com.example.aramoolah.data.WalletDatabase;
 import com.example.aramoolah.model.Item;
+import com.example.aramoolah.model.User;
 import com.example.aramoolah.model.Wallet;
 import com.example.aramoolah.repository.ItemRepository;
 import com.example.aramoolah.repository.TransactionRepository;
 import com.example.aramoolah.model.Transaction;
+import com.example.aramoolah.repository.UserRepository;
 import com.example.aramoolah.repository.WalletRepository;
 
 import java.util.List;
@@ -29,6 +33,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
     TransactionRepository transactionRepository;
     ItemRepository itemRepository;
     WalletRepository walletRepository;
+    UserRepository userRepository;
     public PersonalFinanceViewModel(@NonNull Application application) {
         super(application);
 
@@ -46,6 +51,11 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         WalletDao walletDao = WalletDatabase.getWalletDatabase(application).walletDao();
         walletRepository = new WalletRepository(walletDao);
         readAllWallet = walletRepository.getAllWallet();
+
+        //User
+        UserDao userDao = UserDatabase.getUserDatabase(application).userDao();
+        userRepository = new UserRepository(userDao);
+
     }
 
     // Transaction

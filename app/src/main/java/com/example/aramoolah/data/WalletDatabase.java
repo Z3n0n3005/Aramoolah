@@ -7,7 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import com.example.aramoolah.Converter;
+import com.example.aramoolah.converter.Converter;
 import com.example.aramoolah.model.Wallet;
 
 @Database(entities = {Wallet.class}, version = 1)

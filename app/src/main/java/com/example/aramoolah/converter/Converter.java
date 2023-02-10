@@ -1,4 +1,4 @@
-package com.example.aramoolah;
+package com.example.aramoolah.converter;
 
 import androidx.room.TypeConverter;
 
@@ -9,6 +9,10 @@ import org.javamoney.moneta.Money;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Currency;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 
 public class Converter {
     // Transaction
@@ -57,4 +61,10 @@ public class Converter {
     public static Money stringToMoney(String money){
         return (money == null)? null : Money.parse(money);
     }
+
+//    public static void main(String[] args) {
+//        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
+//        Money money = Money.of(12, currencyUnit);
+//        System.out.println(money);
+//    }
 }
