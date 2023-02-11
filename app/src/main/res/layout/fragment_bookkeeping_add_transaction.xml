@@ -9,65 +9,64 @@
     <EditText
         android:id="@+id/amountOfMoney_et"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="50dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="5dp"
         android:height="48dp"
-        android:text="Amount"
         android:inputType="phone"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Amount"
+        app:layout_constraintEnd_toStartOf="@+id/addTransactionMultiple_txt"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="Autofill" />
 
     <EditText
         android:id="@+id/numberOfItems_et"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="30dp"
         android:height="48dp"
-        android:text="Number of Items"
         android:inputType="phone"
+        android:text="##"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wallet_et" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="Autofill" />
 
     <Spinner
         android:id="@+id/wallet_et"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
         android:height="48dp"
-        android:prompt="Wallet"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/amountOfMoney_et" />
+        app:layout_constraintTop_toBottomOf="@+id/amountOfMoney_et"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <EditText
         android:id="@+id/itemName_et"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
-        android:height="48dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Item"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/numberOfItems_et" />
+        app:layout_constraintTop_toBottomOf="@+id/category_et" />
 
     <EditText
         android:id="@+id/category_et"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
@@ -76,18 +75,27 @@
         android:text="Category"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemName_et" />
+        app:layout_constraintTop_toBottomOf="@+id/wallet_et" />
 
     <Button
         android:id="@+id/submit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="152dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="165dp"
+        android:layout_marginTop="10dp"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/category_et" />
+        app:layout_constraintTop_toBottomOf="@+id/itemName_et" />
+
+    <TextView
+        android:id="@+id/addTransactionMultiple_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="5dp"
+        android:text="X"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toStartOf="@+id/numberOfItems_et"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
