@@ -24,4 +24,7 @@ public interface WalletDao {
 
     @Query("SELECT * FROM wallet_table ORDER BY walletId")
     LiveData<List<Wallet>> getAllWallet();
+
+    @Query("SELECT walletId FROM wallet_table WHERE walletName = :walletName")
+    int getWalletId(String walletName);
 }

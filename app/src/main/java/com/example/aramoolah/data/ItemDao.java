@@ -22,6 +22,9 @@ public interface ItemDao {
     @Delete
     void deleteItem(Item item);
 
-    @Query("SELECT * FROM item_table ORDER BY item_table.itemId")
+    @Query("SELECT * FROM item_table ORDER BY itemId")
     LiveData<List<Item>> getAllItem();
+
+    @Query("SELECT itemId FROM item_table WHERE itemName = :itemName")
+    int getItemId(String itemName);
 }

@@ -7,11 +7,14 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    // fragment_bookkeeping_add_transaction
     <string-array name="wallet">
         <item>Cash</item>
         <item>Bank</item>
+    </string-array>
+    <string-array name="transactionType">
+        <item>+</item>
+        <item>-</item>
     </string-array>
     <string name="nothing_selected_layout_text">"Select one ..."</string>
 </resources>

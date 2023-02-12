@@ -25,4 +25,6 @@ public class UserRepository {
     public LiveData<List<User>> getAllUser(){
         return userDao.getAllUser();
     }
+    public int getUserId(String email){return userDao.getUserId(email);}
+    public User getUser(String email){return userDao.getUser(email);}
 }

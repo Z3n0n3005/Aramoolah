@@ -16,4 +16,5 @@ public class ItemRepository {
     public void updateItem(Item item){itemDao.updateItem(item);}
     public void deleteItem(Item item){itemDao.deleteItem(item);}
     public LiveData<List<Item>> getAllItem(){return itemDao.getAllItem();}
+    public int getItemId(String itemName){return itemDao.getItemId(itemName);}
 }

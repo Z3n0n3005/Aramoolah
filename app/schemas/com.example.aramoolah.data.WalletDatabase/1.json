@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7b519e2e91690810740b14986ec40f8a",
+    "identityHash": "f7726719efdf77698640bbe4bfb7bbc7",
     "entities": [
       {
         "tableName": "wallet_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`walletId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `userId` INTEGER NOT NULL, `firstName` TEXT, `middleName` TEXT, `lastName` TEXT, `totalAmount` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`walletId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `userId` INTEGER NOT NULL, `walletName` TEXT, `totalAmount` TEXT, FOREIGN KEY(`userId`) REFERENCES `user_table`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "walletId",
@@ -14,6 +14,69 @@
             "affinity": "INTEGER",
             "notNull": true
           },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "walletName",
+            "columnName": "walletName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "totalAmount",
+            "columnName": "totalAmount",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "walletId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_wallet_table_walletName",
+            "unique": true,
+            "columnNames": [
+              "walletName"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_wallet_table_walletName` ON `${TABLE_NAME}` (`walletName`)"
+          },
+          {
+            "name": "index_wallet_table_userId",
+            "unique": false,
+            "columnNames": [
+              "userId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_wallet_table_userId` ON `${TABLE_NAME}` (`userId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user_table",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "userId"
+            ],
+            "referencedColumns": [
+              "userId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "user_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `firstName` TEXT, `middleName` TEXT, `lastName` TEXT, `email` TEXT, `password` TEXT)",
+        "fields": [
           {
             "fieldPath": "userId",
             "columnName": "userId",
@@ -39,8 +102,14 @@
             "notNull": false
           },
           {
-            "fieldPath": "totalAmount",
-            "columnName": "totalAmount",
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "password",
+            "columnName": "password",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -48,17 +117,27 @@
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "walletId"
+            "userId"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_user_table_email",
+            "unique": true,
+            "columnNames": [
+              "email"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_user_table_email` ON `${TABLE_NAME}` (`email`)"
+          }
+        ],
         "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7b519e2e91690810740b14986ec40f8a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f7726719efdf77698640bbe4bfb7bbc7')"
     ]
   }
 }

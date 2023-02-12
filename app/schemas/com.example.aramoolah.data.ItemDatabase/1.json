@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "fd7b06479bb33cb1ef448999e6e977be",
+    "identityHash": "b520e69c3a908b69307743bf40a5a00e",
     "entities": [
       {
         "tableName": "item_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `cost` INTEGER NOT NULL, `itemCategory` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `itemName` TEXT, `cost` TEXT, `itemCategory` TEXT)",
         "fields": [
           {
             "fieldPath": "itemId",
@@ -15,16 +15,16 @@
             "notNull": true
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
+            "fieldPath": "itemName",
+            "columnName": "itemName",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "cost",
             "columnName": "cost",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "itemCategory",
@@ -39,14 +39,24 @@
             "itemId"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_item_table_itemName",
+            "unique": true,
+            "columnNames": [
+              "itemName"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_item_table_itemName` ON `${TABLE_NAME}` (`itemName`)"
+          }
+        ],
         "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fd7b06479bb33cb1ef448999e6e977be')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b520e69c3a908b69307743bf40a5a00e')"
     ]
   }
 }

@@ -35,7 +35,7 @@ public class NothingSelectedSpinnerAdapter implements SpinnerAdapter {
     /**
      * Use this constructor to Define your 'Select One...' layout as the first
      * row in the returned choices.
-     * If you do this, you probably don't want a prompt on your spinner or it'll
+     * If you do this, you probably don't want a prompt on your transactionType_sp or it'll
      * have two 'Select' rows.
      * @param spinnerAdapter wrapped Adapter. Should probably return false for isEnabled(0)
      * @param nothingSelectedLayout layout for nothing selected, perhaps you want

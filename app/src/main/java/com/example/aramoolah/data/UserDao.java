@@ -24,4 +24,10 @@ public interface UserDao {
 
     @Query("SELECT * FROM user_table ORDER BY userId")
     LiveData<List<User>> getAllUser();
+
+    @Query("SELECT userId FROM user_table WHERE email = :email")
+    int getUserId(String email);
+
+    @Query("SELECT * FROM user_table WHERE email = :email")
+    User getUser(String email);
 }

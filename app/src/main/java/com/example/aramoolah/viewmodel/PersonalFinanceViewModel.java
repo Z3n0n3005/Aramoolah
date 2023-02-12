@@ -15,6 +15,8 @@ import com.example.aramoolah.data.UserDatabase;
 import com.example.aramoolah.data.WalletDao;
 import com.example.aramoolah.data.WalletDatabase;
 import com.example.aramoolah.model.Item;
+import com.example.aramoolah.model.ItemCategory;
+import com.example.aramoolah.model.TransactionType;
 import com.example.aramoolah.model.User;
 import com.example.aramoolah.model.Wallet;
 import com.example.aramoolah.repository.ItemRepository;
@@ -23,38 +25,43 @@ import com.example.aramoolah.model.Transaction;
 import com.example.aramoolah.repository.UserRepository;
 import com.example.aramoolah.repository.WalletRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PersonalFinanceViewModel extends AndroidViewModel {
-    LiveData<List<Transaction>> readAllTransaction;
-    LiveData<List<Item>> readAllItem;
-    LiveData<List<Wallet>> readAllWallet;
+    LiveData<List<Transaction>> readAllTransactionOfCurrentUser;
+    LiveData<List<Item>> readAllItemOfCurrentUser;
+    LiveData<List<Wallet>> readAllWalletOfCurrentUser;
+    User currentUser;
+
 
     TransactionRepository transactionRepository;
     ItemRepository itemRepository;
     WalletRepository walletRepository;
     UserRepository userRepository;
-    public PersonalFinanceViewModel(@NonNull Application application) {
+
+    public PersonalFinanceViewModel(@NonNull Application application) throws InterruptedException {
         super(application);
-
-        // Transaction
-        TransactionDao transactionDao = TransactionDatabase.getTransactionDatabase(application).transactionDao();
-        transactionRepository = new TransactionRepository(transactionDao);
-        readAllTransaction = transactionDao.getAllTransaction();
-
-        // Item
-        ItemDao itemDao = ItemDatabase.getItemDatabase(application).itemDao();
-        itemRepository = new ItemRepository(itemDao);
-        readAllItem = itemRepository.getAllItem();
-
-        //Wallet
-        WalletDao walletDao = WalletDatabase.getWalletDatabase(application).walletDao();
-        walletRepository = new WalletRepository(walletDao);
-        readAllWallet = walletRepository.getAllWallet();
 
         //User
         UserDao userDao = UserDatabase.getUserDatabase(application).userDao();
         userRepository = new UserRepository(userDao);
+        currentUser = getUser("John@gmail.com");
+
+        // Transaction
+        TransactionDao transactionDao = TransactionDatabase.getTransactionDatabase(application).transactionDao();
+        transactionRepository = new TransactionRepository(transactionDao);
+        readAllTransactionOfCurrentUser = transactionDao.getAllTransaction();
+
+        // Item
+        ItemDao itemDao = ItemDatabase.getItemDatabase(application).itemDao();
+        itemRepository = new ItemRepository(itemDao);
+        readAllItemOfCurrentUser = itemRepository.getAllItem();
+
+        //Wallet
+        WalletDao walletDao = WalletDatabase.getWalletDatabase(application).walletDao();
+        walletRepository = new WalletRepository(walletDao);
+        readAllWalletOfCurrentUser = walletRepository.getAllWallet();
 
     }
 
@@ -64,6 +71,32 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
             @Override
             public void run() {transactionRepository.addTransaction(transaction);}
         }).start();
+    }
+
+    /**
+     * Another way to add transaction
+     * @param amountOfMoney
+     * @param numberOfItem
+     * @param transactionType
+     * @param walletId
+     * @param itemId
+     * @throws InterruptedException
+     */
+    public void addTransaction(
+            Integer amountOfMoney,
+            Integer numberOfItem,
+            TransactionType transactionType,
+            Integer walletId,
+            Integer itemId
+    ) throws InterruptedException {
+        Transaction transaction = new Transaction();
+        transaction.walletId = walletId;
+        transaction.dateTime = LocalDateTime.now();
+        transaction.itemId = itemId;
+        transaction.amountOfMoney = amountOfMoney;
+        transaction.numberOfItem = numberOfItem;
+        transaction.transactionType = transactionType;
+        addTransaction(transaction);
     }
 
     public void updateTransaction(Transaction transaction){
@@ -108,6 +141,25 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         }).start();
     }
 
+    public int getItemId(String itemName) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile int result;
+            @Override
+            public void run() {
+                result = itemRepository.getItemId(itemName);
+            }
+
+            public int getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
     // Wallet
     public void addWallet(Wallet wallet){
         new Thread(new Runnable() {
@@ -134,5 +186,89 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
                 walletRepository.deleteWallet(wallet);
             }
         }).start();
+    }
+
+    public int getWalletId(String walletName) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile int result;
+            @Override
+            public void run() {
+                result = walletRepository.getWalletId(walletName);
+            }
+
+            public int getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    // User
+    public void addUser(User user){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                userRepository.addUser(user);
+            }
+        }).start();
+    }
+
+    public void updateUser(User user){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                userRepository.updateUser(user);
+            }
+        }).start();
+    }
+
+    public void deleteUser(User user){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                userRepository.deleteUser(user);
+            }
+        }).start();
+    }
+
+    public int getUserId(String email) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile int result;
+            @Override
+            public void run() {
+                result = userRepository.getUserId(email);
+            }
+
+            public int getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+    public User getUser(String email) throws InterruptedException{
+        class Foo implements Runnable {
+            private volatile User result;
+            @Override
+            public void run() {
+                result = userRepository.getUser(email);
+            }
+
+            public User getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
     }
 }
