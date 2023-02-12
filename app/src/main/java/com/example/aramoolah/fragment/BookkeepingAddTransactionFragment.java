@@ -35,7 +35,13 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
         Spinner walletEt = binding.walletEt;
         ArrayAdapter<CharSequence> walletNamesAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.wallet, android.R.layout.simple_spinner_item);
         walletNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        walletEt.setAdapter(walletNamesAdapter);
+        walletEt.setAdapter(
+                new NothingSelectedSpinnerAdapter(
+                        walletNamesAdapter,
+                        R.layout.spinner_row_nothing_selected_layout,
+                        getActivity()
+                )
+        );
         walletEt.setOnItemSelectedListener(this);
         walletEt.setPrompt("Select a wallet");
 
@@ -56,7 +62,6 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        String walletName = adapterView.getItemAtPosition(i).toString();
 
     }
 

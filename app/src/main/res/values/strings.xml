@@ -13,4 +13,5 @@
         <item>Cash</item>
         <item>Bank</item>
     </string-array>
+    <string name="nothing_selected_layout_text">"Select one ..."</string>
 </resources>

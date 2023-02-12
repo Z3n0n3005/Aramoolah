@@ -8,6 +8,27 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
+                  <entry key="BookkeepingAddTransactionFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_BookkeepingAddTransactionFragment_to_BookkeepingHistoryFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="BookkeepingHistoryFragment">
                     <value>
                       <LayoutPositions>
@@ -19,28 +40,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_FirstFragment_to_SecondFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="SecondFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_SecondFragment_to_FirstFragment">
+                            <entry key="action_BookkeepingHistoryFragment_to_BookkeepingAddTransactionFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
