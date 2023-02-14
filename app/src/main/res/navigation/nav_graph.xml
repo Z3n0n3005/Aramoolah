@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/BookkeepingHistoryFragment"
-        android:name="com.example.aramoolah.fragment.BookkeepingHistoryFragment"
+        android:name="com.example.aramoolah.ui.fragment.BookkeepingHistoryFragment"
         android:label="@string/bookkeeping_history_fragment_label"
         tools:layout="@layout/fragment_bookkeeping_history">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/BookkeepingAddTransactionFragment"
-        android:name="com.example.aramoolah.fragment.BookkeepingAddTransactionFragment"
+        android:name="com.example.aramoolah.ui.fragment.BookkeepingAddTransactionFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_bookkeeping_add_transaction">
 

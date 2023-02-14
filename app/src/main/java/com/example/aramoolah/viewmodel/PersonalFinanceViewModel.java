@@ -6,24 +6,20 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.aramoolah.data.ItemDao;
-import com.example.aramoolah.data.ItemDatabase;
-import com.example.aramoolah.data.TransactionDao;
-import com.example.aramoolah.data.TransactionDatabase;
-import com.example.aramoolah.data.UserDao;
-import com.example.aramoolah.data.UserDatabase;
-import com.example.aramoolah.data.WalletDao;
-import com.example.aramoolah.data.WalletDatabase;
-import com.example.aramoolah.model.Item;
-import com.example.aramoolah.model.ItemCategory;
-import com.example.aramoolah.model.TransactionType;
-import com.example.aramoolah.model.User;
-import com.example.aramoolah.model.Wallet;
-import com.example.aramoolah.repository.ItemRepository;
-import com.example.aramoolah.repository.TransactionRepository;
-import com.example.aramoolah.model.Transaction;
-import com.example.aramoolah.repository.UserRepository;
-import com.example.aramoolah.repository.WalletRepository;
+import com.example.aramoolah.data.dao.ItemDao;
+import com.example.aramoolah.data.dao.TransactionDao;
+import com.example.aramoolah.data.database.PersonalFinanceDatabase;
+import com.example.aramoolah.data.dao.UserDao;
+import com.example.aramoolah.data.dao.WalletDao;
+import com.example.aramoolah.data.model.Item;
+import com.example.aramoolah.data.model.TransactionType;
+import com.example.aramoolah.data.model.User;
+import com.example.aramoolah.data.model.Wallet;
+import com.example.aramoolah.data.repository.ItemRepository;
+import com.example.aramoolah.data.repository.TransactionRepository;
+import com.example.aramoolah.data.model.Transaction;
+import com.example.aramoolah.data.repository.UserRepository;
+import com.example.aramoolah.data.repository.WalletRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,22 +40,22 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         super(application);
 
         //User
-        UserDao userDao = UserDatabase.getUserDatabase(application).userDao();
+        UserDao userDao = PersonalFinanceDatabase.getTransactionDatabase(application).userDao();
         userRepository = new UserRepository(userDao);
-        currentUser = getUser("John@gmail.com");
+//        currentUser = getUser("John@gmail.com");
 
         // Transaction
-        TransactionDao transactionDao = TransactionDatabase.getTransactionDatabase(application).transactionDao();
+        TransactionDao transactionDao = PersonalFinanceDatabase.getTransactionDatabase(application).transactionDao();
         transactionRepository = new TransactionRepository(transactionDao);
         readAllTransactionOfCurrentUser = transactionDao.getAllTransaction();
 
         // Item
-        ItemDao itemDao = ItemDatabase.getItemDatabase(application).itemDao();
+        ItemDao itemDao = PersonalFinanceDatabase.getTransactionDatabase(application).itemDao();
         itemRepository = new ItemRepository(itemDao);
         readAllItemOfCurrentUser = itemRepository.getAllItem();
 
         //Wallet
-        WalletDao walletDao = WalletDatabase.getWalletDatabase(application).walletDao();
+        WalletDao walletDao = PersonalFinanceDatabase.getTransactionDatabase(application).walletDao();
         walletRepository = new WalletRepository(walletDao);
         readAllWalletOfCurrentUser = walletRepository.getAllWallet();
 
@@ -89,13 +85,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
             Integer walletId,
             Integer itemId
     ) throws InterruptedException {
-        Transaction transaction = new Transaction();
-        transaction.walletId = walletId;
-        transaction.dateTime = LocalDateTime.now();
-        transaction.itemId = itemId;
-        transaction.amountOfMoney = amountOfMoney;
-        transaction.numberOfItem = numberOfItem;
-        transaction.transactionType = transactionType;
+        Transaction transaction = new Transaction(walletId,itemId,transactionType,amountOfMoney,numberOfItem,LocalDateTime.now());
         addTransaction(transaction);
     }
 
@@ -162,6 +152,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
 
     // Wallet
     public void addWallet(Wallet wallet){
+
         new Thread(new Runnable() {
             @Override
             public void run() {
