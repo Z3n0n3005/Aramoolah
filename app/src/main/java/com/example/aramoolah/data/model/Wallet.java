@@ -1,5 +1,6 @@
 package com.example.aramoolah.data.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -33,5 +34,11 @@ public class Wallet {
         this.userId = userId;
         this.walletName = walletName;
         this.totalAmount = totalAmount;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return walletName;
     }
 }

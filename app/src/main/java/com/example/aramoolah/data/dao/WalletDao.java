@@ -31,6 +31,9 @@ public interface WalletDao {
     @Query("SELECT walletId FROM wallet_table WHERE walletName = :walletName")
     int getWalletId(String walletName);
 
+    @Query("SELECT * FROM wallet_table WHERE walletId = :walletId")
+    Wallet getWallet(Integer walletId);
+
     @MapInfo(keyColumn = "walletId", valueColumn = "transactionId")
     @Query("SELECT * FROM transaction_table t JOIN wallet_table w ON t.walletId = w.walletId")
     Map<Integer, List<Integer>> getAllTransactionWithWalletId();

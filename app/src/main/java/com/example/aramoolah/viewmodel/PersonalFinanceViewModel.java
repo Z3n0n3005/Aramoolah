@@ -25,6 +25,7 @@ import com.example.aramoolah.data.repository.WalletRepository;
 import org.javamoney.moneta.Money;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,26 +74,6 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         }).start();
     }
 
-    /**
-     * Another way to add transaction
-     * @param amountOfMoney
-     * @param numberOfItem
-     * @param transactionType
-     * @param walletId
-     * @param itemId
-     * @throws InterruptedException
-     */
-    public void addTransaction(
-            Money amountOfMoney,
-            Integer numberOfItem,
-            TransactionType transactionType,
-            Integer walletId,
-            Integer itemId
-    ) throws InterruptedException {
-        Transaction transaction = new Transaction(walletId,itemId,transactionType,amountOfMoney,numberOfItem,LocalDateTime.now());
-        addTransaction(transaction);
-    }
-
     public void updateTransaction(Transaction transaction){
         new Thread(new Runnable() {
             @Override
@@ -107,7 +88,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         }).start();
     }
 
-    public Map<Integer, List<Integer>> getAllTransactionOfCurrentUser() throws InterruptedException {
+    public Map<Integer, List<Integer>> getCurrentUserTransaction() throws InterruptedException {
         class Foo implements Runnable{
             private volatile Map<Integer, List<Integer>> readAllTransaction;
             @Override
@@ -125,15 +106,24 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         return foo.getResult();
     }
 
-    public Map<Integer,List<Integer>> getAllWalletOfCurrentUser() throws InterruptedException {
+    public List<Wallet> getCurrentUserWallet() throws InterruptedException {
         class Foo implements Runnable{
-            private volatile Map<Integer,List<Integer>> readAllWallet;
+            private volatile Map<Integer,List<Integer>> readCurrentUserWalletId;
+            private volatile List<Wallet> readCurrentUserWallet = new ArrayList<>();
             @Override
             public void run() {
-                readAllWallet = userRepository.getAllWalletOfCurrentUser();
+                readCurrentUserWalletId = userRepository.getAllWalletOfCurrentUser();
+                List<Integer> walletIdList = readCurrentUserWalletId.get(currentUser.userId);
+                for(Integer walletId : walletIdList){
+                    try {
+                        readCurrentUserWallet.add(getWallet(walletId));
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
-            public Map<Integer,List<Integer>> getResult(){
-                return readAllWallet;
+            public List<Wallet> getResult(){
+                return readCurrentUserWallet;
             }
         }
         Foo foo = new Foo();
@@ -228,6 +218,25 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
             }
 
             public int getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public Wallet getWallet(Integer walletId) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile Wallet result;
+            @Override
+            public void run() {
+                result = walletRepository.getWallet(walletId);
+            }
+
+            public Wallet getResult() {
                 return result;
             }
         }
