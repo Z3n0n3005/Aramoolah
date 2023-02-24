@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 4,
-    "identityHash": "d33b131112ea8e8e0edc80babce966b0",
+    "version": 6,
+    "identityHash": "15c0123accd110cd1614221c695ebd53",
     "entities": [
       {
         "tableName": "transaction_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`transactionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `walletId` INTEGER, `itemId` INTEGER, `transactionType` TEXT, `amountOfMoney` INTEGER, `numberOfItem` INTEGER, `localDateTime` TEXT, FOREIGN KEY(`walletId`) REFERENCES `wallet_table`(`walletId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`itemId`) REFERENCES `item_table`(`itemId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`transactionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `walletId` INTEGER, `itemId` INTEGER, `transactionType` TEXT, `amountOfMoney` TEXT, `numberOfItem` INTEGER, `localDateTime` TEXT, FOREIGN KEY(`walletId`) REFERENCES `wallet_table`(`walletId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`itemId`) REFERENCES `item_table`(`itemId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "transactionId",
@@ -35,7 +35,7 @@
           {
             "fieldPath": "amountOfMoney",
             "columnName": "amountOfMoney",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -301,7 +301,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd33b131112ea8e8e0edc80babce966b0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '15c0123accd110cd1614221c695ebd53')"
     ]
   }
 }

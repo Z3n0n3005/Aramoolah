@@ -1,5 +1,6 @@
 package com.example.aramoolah.data.model;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
@@ -19,9 +20,13 @@ import org.javamoney.moneta.Money;
 )
 public class Wallet {
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "walletId")
     public Integer walletId;
+    @ColumnInfo(name = "userId")
     public Integer userId;
+    @ColumnInfo(name = "walletName")
     public String walletName;
+    @ColumnInfo(name = "totalAmount")
     public Money totalAmount;
 
     public Wallet(Integer userId, String walletName, Money totalAmount){

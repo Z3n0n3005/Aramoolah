@@ -1,6 +1,7 @@
 package com.example.aramoolah.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -21,14 +22,17 @@ import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.repository.UserRepository;
 import com.example.aramoolah.data.repository.WalletRepository;
 
+import org.javamoney.moneta.Money;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public class PersonalFinanceViewModel extends AndroidViewModel {
     LiveData<List<Transaction>> readAllTransactionOfCurrentUser;
     LiveData<List<Item>> readAllItemOfCurrentUser;
     LiveData<List<Wallet>> readAllWalletOfCurrentUser;
-    User currentUser;
+    public User currentUser;
 
 
     TransactionRepository transactionRepository;
@@ -47,17 +51,17 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         // Transaction
         TransactionDao transactionDao = PersonalFinanceDatabase.getTransactionDatabase(application).transactionDao();
         transactionRepository = new TransactionRepository(transactionDao);
-        readAllTransactionOfCurrentUser = transactionDao.getAllTransaction();
+//        readAllTransactionOfCurrentUser = transactionDao.getAllTransaction();
 
         // Item
         ItemDao itemDao = PersonalFinanceDatabase.getTransactionDatabase(application).itemDao();
         itemRepository = new ItemRepository(itemDao);
-        readAllItemOfCurrentUser = itemRepository.getAllItem();
+//        readAllItemOfCurrentUser = itemRepository.getAllItem();
 
         //Wallet
         WalletDao walletDao = PersonalFinanceDatabase.getTransactionDatabase(application).walletDao();
         walletRepository = new WalletRepository(walletDao);
-        readAllWalletOfCurrentUser = walletRepository.getAllWallet();
+//        readAllWalletOfCurrentUser = walletRepository.getAllWallet();
 
     }
 
@@ -79,7 +83,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
      * @throws InterruptedException
      */
     public void addTransaction(
-            Integer amountOfMoney,
+            Money amountOfMoney,
             Integer numberOfItem,
             TransactionType transactionType,
             Integer walletId,
@@ -101,6 +105,42 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
             @Override
             public void run() {transactionRepository.deleteTransaction(transaction);}
         }).start();
+    }
+
+    public Map<Integer, List<Integer>> getAllTransactionOfCurrentUser() throws InterruptedException {
+        class Foo implements Runnable{
+            private volatile Map<Integer, List<Integer>> readAllTransaction;
+            @Override
+            public void run() {
+                readAllTransaction = userRepository.getAllTransactionOfCurrentUser();
+            }
+            public Map<Integer, List<Integer>> getResult(){
+                return readAllTransaction;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public Map<Integer,List<Integer>> getAllWalletOfCurrentUser() throws InterruptedException {
+        class Foo implements Runnable{
+            private volatile Map<Integer,List<Integer>> readAllWallet;
+            @Override
+            public void run() {
+                readAllWallet = userRepository.getAllWalletOfCurrentUser();
+            }
+            public Map<Integer,List<Integer>> getResult(){
+                return readAllWallet;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
     }
 
     // Item
@@ -261,5 +301,9 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         thread.start();
         thread.join();
         return foo.getResult();
+    }
+
+    public void setCurrentUser(String email) throws InterruptedException {
+        this.currentUser = getUser(email);
     }
 }

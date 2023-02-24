@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.aramoolah.data.model.Item;
@@ -27,4 +28,8 @@ public interface ItemDao {
 
     @Query("SELECT itemId FROM item_table WHERE itemName = :itemName")
     int getItemId(String itemName);
+
+    @Transaction
+    @Query("SELECT * FROM transaction_table WHERE itemId = :itemId ORDER BY transactionId")
+    LiveData<List<Item>> getAllTransactionWithItemId(Integer itemId);
 }
