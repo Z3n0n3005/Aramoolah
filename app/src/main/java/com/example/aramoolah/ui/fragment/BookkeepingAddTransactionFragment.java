@@ -26,6 +26,7 @@ import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.databinding.FragmentBookkeepingAddTransactionBinding;
 import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.Wallet;
+import com.example.aramoolah.util.Initialize;
 import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
 
 import org.javamoney.moneta.Money;
@@ -118,26 +119,12 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        ArrayAdapter<Wallet> walletNamesAdapter = new ArrayAdapter<>(
-                getActivity(),
-                android.R.layout.simple_spinner_item,
-                walletList
-        );
-        walletNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // If want nothing selected + prompt
-        walletSp.setAdapter(
-                new NothingSelectedSpinnerAdapter(
-                        walletNamesAdapter,
-                        R.layout.spinner_row_nothing_selected_layout,
-                        getActivity()
-                )
-        );
+        walletSp.setAdapter(getAdapter(walletList));
 
         // If want preselected first item
 //        walletSp.setAdapter(walletNamesAdapter);
 //        walletSp.setOnItemSelectedListener(this);
-//        walletSp.setPrompt("Select a wallet");
+        walletSp.setPrompt("Select a wallet");
     }
 
     private void setUpTransactionTypeSpinner(){
@@ -264,6 +251,18 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
 
     }
 
+
+//    public void logTemp() throws InterruptedException {
+//        mPersonalFinanceViewModel.setCurrentUser("John@gmail.com");
+//        User current = mPersonalFinanceViewModel.currentUser;
+//        Map<Integer, List<Integer>> userAndWalletList = mPersonalFinanceViewModel.getAllWalletOfCurrentUser();
+//        boolean isCurrentInMap = userAndWalletList.containsKey(current.userId);
+//        List<Integer> walletList = userAndWalletList.get(current.userId);
+//        for(Integer walletId : walletList){
+//            Log.d("ROOM RELATION", "logTemp: " + walletId);
+//        }
+//
+//    }
     private Money createAmountOfMoney(){
         CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
         Integer amountOfMoneyInt = createAmountOfMoneyInt();
@@ -305,57 +304,7 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
                 && (itemId != null)
                 && (transactionType != null);
     }
-
-    public void addUser(){
-        User user = new User("John","John","John","John@gmail.com","12345");
-        mPersonalFinanceViewModel.addUser(user);
-    }
-//
-    public void addWallet() throws InterruptedException {
-        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
-        Money money = Money.of(200000000, currencyUnit);
-
-        Wallet wallet = new Wallet(mPersonalFinanceViewModel.getUserId("John@gmail.com"), "Cash", money);
-        mPersonalFinanceViewModel.addWallet(wallet);
-    }
-//
-    public void addItem() throws InterruptedException {
-        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
-        Money redbull = Money.of(15000, currencyUnit);
-        Integer userId = mPersonalFinanceViewModel.getUserId("John@gmail.com");
-
-        Item item = new Item(userId, "redbull", redbull, ItemCategory.DRINK);
-        mPersonalFinanceViewModel.addItem(item);
-
-        Money cake = Money.of(20000, currencyUnit);
-
-        Item item2 = new Item(userId, "cake", cake, ItemCategory.FOOD);
-        mPersonalFinanceViewModel.addItem(item2);
-    }
-    public void addTempTransaction(){
-        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
-        Money expense = Money.of(15000, currencyUnit);
-
-        Transaction transaction = new Transaction(1, 1, TransactionType.EXPENSE, expense, 1, LocalDateTime.now());
-        mPersonalFinanceViewModel.addTransaction(transaction);
-    }
-//    public void logTemp() throws InterruptedException {
-//        mPersonalFinanceViewModel.setCurrentUser("John@gmail.com");
-//        User current = mPersonalFinanceViewModel.currentUser;
-//        Map<Integer, List<Integer>> userAndWalletList = mPersonalFinanceViewModel.getAllWalletOfCurrentUser();
-//        boolean isCurrentInMap = userAndWalletList.containsKey(current.userId);
-//        List<Integer> walletList = userAndWalletList.get(current.userId);
-//        for(Integer walletId : walletList){
-//            Log.d("ROOM RELATION", "logTemp: " + walletId);
-//        }
-//
-//    }
     public void runOnce() throws InterruptedException {
-        addUser();
-        addWallet();
-        addItem();
-        addTempTransaction();
-        mPersonalFinanceViewModel.setCurrentUser("John@gmail.com");
-
+        Initialize initialize = new Initialize(mPersonalFinanceViewModel, binding);
     }
 }
