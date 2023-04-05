@@ -42,14 +42,15 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
         android:height="48dp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/amountOfMoney_et"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <EditText
-        android:id="@+id/itemName_et"
+    <Spinner
+        android:id="@+id/itemName_sp"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="30dp"
@@ -61,10 +62,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/category_et" />
+        app:layout_constraintTop_toBottomOf="@+id/category_sp" />
 
-    <EditText
-        android:id="@+id/category_et"
+    <Spinner
+        android:id="@+id/category_sp"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="30dp"
@@ -85,7 +86,7 @@
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemName_et" />
+        app:layout_constraintTop_toBottomOf="@+id/itemName_sp" />
 
     <TextView
         android:id="@+id/addTransactionMultiple_txt"

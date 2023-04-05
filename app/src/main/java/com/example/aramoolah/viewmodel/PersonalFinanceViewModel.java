@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.aramoolah.data.dao.ItemDao;
 import com.example.aramoolah.data.dao.TransactionDao;
@@ -13,6 +14,7 @@ import com.example.aramoolah.data.database.PersonalFinanceDatabase;
 import com.example.aramoolah.data.dao.UserDao;
 import com.example.aramoolah.data.dao.WalletDao;
 import com.example.aramoolah.data.model.Item;
+import com.example.aramoolah.data.model.ItemCategory;
 import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.model.Wallet;
@@ -30,10 +32,11 @@ import java.util.List;
 import java.util.Map;
 
 public class PersonalFinanceViewModel extends AndroidViewModel {
-    LiveData<List<Transaction>> readAllTransactionOfCurrentUser;
-    LiveData<List<Item>> readAllItemOfCurrentUser;
-    LiveData<List<Wallet>> readAllWalletOfCurrentUser;
     public User currentUser;
+
+    MutableLiveData<List<Transaction>> currentUserTransactionList;
+    MutableLiveData<List<Item>> currentUserItemList;
+    MutableLiveData<List<Wallet>> currentUserWalletList;
 
 
     TransactionRepository transactionRepository;
@@ -47,22 +50,22 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         //User
         UserDao userDao = PersonalFinanceDatabase.getTransactionDatabase(application).userDao();
         userRepository = new UserRepository(userDao);
-//        currentUser = getUser("John@gmail.com");
+        setCurrentUser("John@gmail.com");
 
         // Transaction
         TransactionDao transactionDao = PersonalFinanceDatabase.getTransactionDatabase(application).transactionDao();
         transactionRepository = new TransactionRepository(transactionDao);
-//        readAllTransactionOfCurrentUser = transactionDao.getAllTransaction();
+        currentUserTransactionList = this.getCurrentUserTransaction();
 
         // Item
         ItemDao itemDao = PersonalFinanceDatabase.getTransactionDatabase(application).itemDao();
         itemRepository = new ItemRepository(itemDao);
-//        readAllItemOfCurrentUser = itemRepository.getAllItem();
+        currentUserItemList = this.getCurrentUserItemList();
 
         //Wallet
         WalletDao walletDao = PersonalFinanceDatabase.getTransactionDatabase(application).walletDao();
         walletRepository = new WalletRepository(walletDao);
-//        readAllWalletOfCurrentUser = walletRepository.getAllWallet();
+        currentUserWalletList = this.getCurrentUserWalletList();
 
     }
 
@@ -88,15 +91,17 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         }).start();
     }
 
-    public Map<Integer, List<Integer>> getCurrentUserTransaction() throws InterruptedException {
+    public Transaction getTransaction(Long transactionId) throws InterruptedException {
         class Foo implements Runnable{
-            private volatile Map<Integer, List<Integer>> readAllTransaction;
+            private volatile Transaction transaction;
+
             @Override
             public void run() {
-                readAllTransaction = userRepository.getAllTransactionOfCurrentUser();
+                transaction = transactionRepository.getTransaction(transactionId);
             }
-            public Map<Integer, List<Integer>> getResult(){
-                return readAllTransaction;
+
+            public Transaction getResult(){
+                return transaction;
             }
         }
         Foo foo = new Foo();
@@ -106,24 +111,29 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         return foo.getResult();
     }
 
-    public List<Wallet> getCurrentUserWallet() throws InterruptedException {
+    public MutableLiveData<List<Transaction>> getCurrentUserTransaction() throws InterruptedException {
         class Foo implements Runnable{
-            private volatile Map<Integer,List<Integer>> readCurrentUserWalletId;
-            private volatile List<Wallet> readCurrentUserWallet = new ArrayList<>();
+            private volatile MutableLiveData<List<Transaction>> currentUserTransaction;
             @Override
             public void run() {
-                readCurrentUserWalletId = userRepository.getAllWalletOfCurrentUser();
-                List<Integer> walletIdList = readCurrentUserWalletId.get(currentUser.userId);
-                for(Integer walletId : walletIdList){
-                    try {
-                        readCurrentUserWallet.add(getWallet(walletId));
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                if(currentUserTransactionList == null) {
+                    Map<Integer, List<Long>> currentUserTransactionId = transactionRepository.getUserTransactionList();
+                    List<Long> transactionIdList = currentUserTransactionId.get(currentUser.userId);
+                    List<Transaction> transactionList = new ArrayList<>();
+                    for (Long transactionId : transactionIdList) {
+                        try {
+                            transactionList.add(getTransaction(transactionId));
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
+                    currentUserTransaction = new MutableLiveData<>(transactionList);
+                } else {
+                    currentUserTransaction = currentUserTransactionList;
                 }
             }
-            public List<Wallet> getResult(){
-                return readCurrentUserWallet;
+            public MutableLiveData<List<Transaction>> getResult(){
+                return currentUserTransaction;
             }
         }
         Foo foo = new Foo();
@@ -171,6 +181,100 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
 
             public int getResult() {
                 return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public Item getItem(Integer itemId) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile Item result;
+            @Override
+            public void run() {
+                result = itemRepository.getItem(itemId);
+            }
+
+            public Item getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public List<Item> getItemFromItemCategory(ItemCategory itemCategory) throws InterruptedException {
+        class Foo implements Runnable{
+            List<Item> currentItemList = currentUserItemList.getValue();
+            List<Item> filteredItemList = new ArrayList<>();
+            @Override
+            public void run() {
+                for(Item item: currentItemList){
+                    if(item.itemCategory.equals(itemCategory)) {
+                        filteredItemList.add(item);
+                    }
+                }
+            }
+
+            public List<Item> getResult(){
+                return filteredItemList;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public ItemCategory getItemCategory(String itemName) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile ItemCategory result;
+            @Override
+            public void run() {
+                result = itemRepository.getItemCategory(itemName);
+            }
+
+            public ItemCategory getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public MutableLiveData<List<Item>> getCurrentUserItemList() throws InterruptedException {
+        class Foo implements Runnable{
+            private volatile MutableLiveData<List<Item>> currentUserItem;
+            @Override
+            public void run() {
+                if(currentUserItemList == null) {
+                    Map<Integer, List<Integer>> currentUserItemId = itemRepository.getUserItemList();
+                    List<Integer> itemIdList = currentUserItemId.get(currentUser.userId);
+                    List<Item> itemList = new ArrayList<>();
+                    for (Integer itemId : itemIdList) {
+                        try {
+                            itemList.add(getItem(itemId));
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    currentUserItem = new MutableLiveData<>(itemList);
+                } else {
+                    currentUserItem = currentUserItemList;
+                }
+            }
+            public MutableLiveData<List<Item>> getResult(){
+                return currentUserItem;
             }
         }
         Foo foo = new Foo();
@@ -238,6 +342,38 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
 
             public Wallet getResult() {
                 return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public MutableLiveData<List<Wallet>> getCurrentUserWalletList() throws InterruptedException {
+        class Foo implements Runnable{
+            private volatile MutableLiveData<List<Wallet>> currentUserWallet = new MutableLiveData<>();
+            @Override
+            public void run() {
+                if(currentUserWalletList == null) {
+                    Map<Integer, List<Integer>> currentUserWalletId = userRepository.getCurrentUserWalletList();
+                    List<Integer> walletIdList = currentUserWalletId.get(currentUser.userId);
+                    List<Wallet> walletList = new ArrayList<>();
+                    for (Integer walletId : walletIdList) {
+                        try {
+                            walletList.add(getWallet(walletId));
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    currentUserWallet = new MutableLiveData<>(walletList);
+                } else {
+                    currentUserWallet = currentUserWalletList;
+                }
+            }
+            public MutableLiveData<List<Wallet>> getResult(){
+                return currentUserWallet;
             }
         }
         Foo foo = new Foo();

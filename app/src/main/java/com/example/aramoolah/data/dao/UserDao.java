@@ -36,10 +36,10 @@ public interface UserDao {
 
     @MapInfo(keyColumn = "userId", valueColumn = "walletId")
     @Query("SELECT * FROM user_table u JOIN wallet_table w ON u.userId = w.userId")
-    Map<Integer, List<Integer>> getAllWalletOfCurrentUser();
+    Map<Integer, List<Integer>> getCurrentUserWalletList();
 
     @MapInfo(keyColumn = "userId", valueColumn = "transactionId")
     @Query("SELECT * FROM user_table u JOIN wallet_table w ON u.userId = w.userId JOIN transaction_table t ON t.walletId = w.walletId")
-    Map<Integer, List<Integer>> getAllTransactionOfCurrentUser();
+    Map<Integer, List<Integer>> getCurrentUserTransactionList();
 
 }

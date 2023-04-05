@@ -7,11 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -28,6 +31,8 @@ import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
 import org.javamoney.moneta.Money;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -55,54 +60,24 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
 
         // PersonalFinanceViewModel
         mPersonalFinanceViewModel = new ViewModelProvider(this).get(PersonalFinanceViewModel.class);
-
-        // Run Once
         try {
-            runOnce();
+            // Run Once
+//            runOnce();
+            //Initialize
+            List<Item> itemList = mPersonalFinanceViewModel.getCurrentUserItemList().getValue();
+            List<ItemCategory> categoryList = Arrays.asList(ItemCategory.values());
+            // Transaction type transactionType_sp
+            setUpItemCategorySpinner(categoryList);
+            // Wallet Spinner walletSp
+            setUpTransactionTypeSpinner();
+            // Item category spinner ItemCategory_sp
+            setUpWalletSpinner();
+            // Item name spinner ItemName_sp
+            setUpItemNameSpinner(itemList, categoryList);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
-        // Wallet Spinner walletSp
-        Spinner walletSp = binding.walletSp;
-        List<Wallet> walletList;
-        try {
-            walletList = mPersonalFinanceViewModel.getCurrentUserWallet();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        ArrayAdapter<Wallet> walletNamesAdapter = new ArrayAdapter<>(
-                getActivity(),
-                android.R.layout.simple_spinner_item,
-                walletList
-        );
-        walletNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        walletSp.setAdapter(
-                new NothingSelectedSpinnerAdapter(
-                        walletNamesAdapter,
-                        R.layout.spinner_row_nothing_selected_layout,
-                        getActivity()
-                )
-        );
-        walletSp.setOnItemSelectedListener(this);
-        walletSp.setPrompt("Select a wallet");
-
-        // Transaction type transactionType_sp
-        Spinner transactionTypeSp = binding.transactionTypeSp;
-        ArrayAdapter<CharSequence> transactionTypeAdapter = ArrayAdapter.createFromResource(
-                getActivity(),
-                R.array.transactionType,
-                android.R.layout.simple_spinner_item
-        );
-        transactionTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        transactionTypeSp.setAdapter(transactionTypeAdapter);
-
-        //TODO: Choosing ItemCategory cut down item option
-
-        // Item category spinner ItemCategory_sp
-
         //TODO: Find a view that can type and quick search
-
 
         //TODO: Auto choose category depending on Item
 
@@ -135,6 +110,130 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
     public void onNothingSelected(AdapterView<?> adapterView) {
     }
 
+    private void setUpWalletSpinner(){
+        Spinner walletSp = binding.walletSp;
+        List<Wallet> walletList;
+        try {
+            walletList = mPersonalFinanceViewModel.getCurrentUserWalletList().getValue();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        ArrayAdapter<Wallet> walletNamesAdapter = new ArrayAdapter<>(
+                getActivity(),
+                android.R.layout.simple_spinner_item,
+                walletList
+        );
+        walletNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // If want nothing selected + prompt
+        walletSp.setAdapter(
+                new NothingSelectedSpinnerAdapter(
+                        walletNamesAdapter,
+                        R.layout.spinner_row_nothing_selected_layout,
+                        getActivity()
+                )
+        );
+
+        // If want preselected first item
+//        walletSp.setAdapter(walletNamesAdapter);
+//        walletSp.setOnItemSelectedListener(this);
+//        walletSp.setPrompt("Select a wallet");
+    }
+
+    private void setUpTransactionTypeSpinner(){
+        Spinner transactionTypeSp = binding.transactionTypeSp;
+        ArrayAdapter<CharSequence> transactionTypeAdapter = ArrayAdapter.createFromResource(
+                getActivity(),
+                R.array.transactionType,
+                android.R.layout.simple_spinner_item
+        );
+        transactionTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        transactionTypeSp.setAdapter(transactionTypeAdapter);
+    }
+
+    private void setUpItemCategorySpinner(List<ItemCategory> categoryList) throws InterruptedException {
+        Spinner itemNameSp = binding.itemNameSp;
+        Spinner categorySp = binding.categorySp;
+        categorySp.setAdapter(getAdapter(categoryList));
+
+        // TODO test if auto fill category works
+
+        // This is for setting what happens to the item list when chosen a category
+        categorySp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                ItemCategory itemCategory = (ItemCategory) adapterView.getItemAtPosition(i);
+                Item item = (Item) itemNameSp.getSelectedItem();
+                List<Item> filteredItemList;
+                if(itemCategory != null){
+                    if(item != null) {
+                        if (!itemCategory.equals(item.itemCategory)) {
+                            try {
+                                filteredItemList = mPersonalFinanceViewModel.getItemFromItemCategory(itemCategory);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                            itemNameSp.setAdapter(getAdapter(filteredItemList));
+                        }
+                    }
+                    if(item == null){
+                        try {
+                            filteredItemList = mPersonalFinanceViewModel.getItemFromItemCategory(itemCategory);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        itemNameSp.setAdapter(getAdapter(filteredItemList));
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void setUpItemNameSpinner(List<Item> itemList, List<ItemCategory> categoryList) throws InterruptedException {
+        Spinner itemNameSp = binding.itemNameSp;
+        Spinner categorySp = binding.categorySp;
+        itemNameSp.setAdapter(getAdapter(itemList));
+
+        itemNameSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Item item = (Item) adapterView.getItemAtPosition(i);
+                ItemCategory itemCategory = (ItemCategory) categorySp.getSelectedItem();
+                List<ItemCategory> filteredCategory = new ArrayList<>();
+                // Auto select
+                if(itemCategory == null && item != null){
+                    ItemCategory selectedItemCategory = item.itemCategory;
+                    categorySp.setSelection(categoryList.indexOf(selectedItemCategory) + 1);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private <T> NothingSelectedSpinnerAdapter getAdapter(List<T> list ){
+        ArrayAdapter<T> arrayAdapter = new ArrayAdapter<>(
+            getActivity(),
+            android.R.layout.simple_spinner_item,
+            list
+        );
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return new NothingSelectedSpinnerAdapter(
+            arrayAdapter,
+            R.layout.spinner_row_nothing_selected_layout,
+            getActivity()
+        );
+    }
+
     public void addTransaction() throws InterruptedException {
         //amountOfMoney
         Integer amountOfMoneyInt = createAmountOfMoneyInt();
@@ -165,31 +264,31 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
 
     }
 
-    public Money createAmountOfMoney(){
+    private Money createAmountOfMoney(){
         CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
         Integer amountOfMoneyInt = createAmountOfMoneyInt();
         Money amountOfMoney = Money.of(amountOfMoneyInt, currencyUnit);
         return amountOfMoney;
     }
 
-    public Integer createAmountOfMoneyInt(){
+    private Integer createAmountOfMoneyInt(){
         return Integer.parseInt(binding.amountOfMoneyEt.getText().toString());
     }
 
-    public Integer createNumberOfItem(){
+    private Integer createNumberOfItem(){
         return Integer.parseInt(binding.numberOfItemsEt.getText().toString());
     }
 
-    public Integer createWalletId() throws InterruptedException {
+    private Integer createWalletId() throws InterruptedException {
         return mPersonalFinanceViewModel.getWalletId(binding.walletSp.getSelectedItem().toString());
     }
 
-    public Integer createItemId() throws InterruptedException {
-        Integer itemId = mPersonalFinanceViewModel.getItemId(binding.itemNameEt.getText().toString());
+    private Integer createItemId() throws InterruptedException {
+        Integer itemId = mPersonalFinanceViewModel.getItemId(binding.itemNameSp.getSelectedItem().toString());
         return itemId;
     }
 
-    public TransactionType createTransactionType(){
+    private TransactionType createTransactionType(){
         String transactionTypeStr = binding.transactionTypeSp.getSelectedItem().toString();
         TransactionType transactionType;
 
@@ -199,7 +298,7 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
         return TransactionType.EXPENSE;
     }
 
-    public boolean inputCheck(Integer amountOfMoneyInt, Integer numberOfItem, Integer walletId, Integer itemId, TransactionType transactionType){
+    private boolean inputCheck(Integer amountOfMoneyInt, Integer numberOfItem, Integer walletId, Integer itemId, TransactionType transactionType){
         return (amountOfMoneyInt != null && amountOfMoneyInt >= 0)
                 && (numberOfItem != null && numberOfItem > 0)
                 && (walletId != null)
@@ -207,39 +306,39 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
                 && (transactionType != null);
     }
 
-//    public void addUser(){
-//        User user = new User("John","John","John","John@gmail.com","12345");
-//        mPersonalFinanceViewModel.addUser(user);
-//    }
+    public void addUser(){
+        User user = new User("John","John","John","John@gmail.com","12345");
+        mPersonalFinanceViewModel.addUser(user);
+    }
 //
-//    public void addWallet() throws InterruptedException {
-//        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
-//        Money money = Money.of(200000000, currencyUnit);
+    public void addWallet() throws InterruptedException {
+        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
+        Money money = Money.of(200000000, currencyUnit);
+
+        Wallet wallet = new Wallet(mPersonalFinanceViewModel.getUserId("John@gmail.com"), "Cash", money);
+        mPersonalFinanceViewModel.addWallet(wallet);
+    }
 //
-//        Wallet wallet = new Wallet(mPersonalFinanceViewModel.getUserId("John@gmail.com"), "Cash", money);
-//        mPersonalFinanceViewModel.addWallet(wallet);
-//    }
-//
-//    public void addItem() throws InterruptedException {
-//        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
-//        Money redbull = Money.of(15000, currencyUnit);
-//        Integer userId = mPersonalFinanceViewModel.getUserId("John@gmail.com");
-//
-//        Item item = new Item(userId, "redbull", redbull, ItemCategory.DRINK);
-//        mPersonalFinanceViewModel.addItem(item);
-//
-//        Money cake = Money.of(20000, currencyUnit);
-//
-//        Item item2 = new Item(userId, "cake", cake, ItemCategory.FOOD);
-//        mPersonalFinanceViewModel.addItem(item2);
-//    }
-//    public void addTempTransaction(){
-//        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
-//        Money expense = Money.of(15000, currencyUnit);
-//
-//        Transaction transaction = new Transaction(1, 1, TransactionType.EXPENSE, expense, 1, LocalDateTime.now());
-//        mPersonalFinanceViewModel.addTransaction(transaction);
-//    }
+    public void addItem() throws InterruptedException {
+        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
+        Money redbull = Money.of(15000, currencyUnit);
+        Integer userId = mPersonalFinanceViewModel.getUserId("John@gmail.com");
+
+        Item item = new Item(userId, "redbull", redbull, ItemCategory.DRINK);
+        mPersonalFinanceViewModel.addItem(item);
+
+        Money cake = Money.of(20000, currencyUnit);
+
+        Item item2 = new Item(userId, "cake", cake, ItemCategory.FOOD);
+        mPersonalFinanceViewModel.addItem(item2);
+    }
+    public void addTempTransaction(){
+        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
+        Money expense = Money.of(15000, currencyUnit);
+
+        Transaction transaction = new Transaction(1, 1, TransactionType.EXPENSE, expense, 1, LocalDateTime.now());
+        mPersonalFinanceViewModel.addTransaction(transaction);
+    }
 //    public void logTemp() throws InterruptedException {
 //        mPersonalFinanceViewModel.setCurrentUser("John@gmail.com");
 //        User current = mPersonalFinanceViewModel.currentUser;
@@ -252,6 +351,11 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
 //
 //    }
     public void runOnce() throws InterruptedException {
+        addUser();
+        addWallet();
+        addItem();
+        addTempTransaction();
         mPersonalFinanceViewModel.setCurrentUser("John@gmail.com");
+
     }
 }

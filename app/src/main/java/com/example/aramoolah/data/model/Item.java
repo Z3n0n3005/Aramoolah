@@ -1,5 +1,6 @@
 package com.example.aramoolah.data.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -31,5 +32,11 @@ public class Item{
         this.itemCategory = itemCategory;
         this.itemName = itemName;
         this.cost = cost;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return itemName;
     }
 }

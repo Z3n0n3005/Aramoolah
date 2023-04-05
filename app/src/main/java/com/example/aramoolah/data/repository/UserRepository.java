@@ -29,6 +29,6 @@ public class UserRepository {
     }
     public int getUserId(String email){return userDao.getUserId(email);}
     public User getUser(String email){return userDao.getUser(email);}
-    public Map<Integer, List<Integer>> getAllWalletOfCurrentUser(){return userDao.getAllWalletOfCurrentUser();}
-    public Map<Integer, List<Integer>> getAllTransactionOfCurrentUser(){return userDao.getAllTransactionOfCurrentUser();}
+    public Map<Integer, List<Integer>> getCurrentUserWalletList(){return userDao.getCurrentUserWalletList();}
+    public Map<Integer, List<Integer>> getCurrentUserTransactionList(){return userDao.getCurrentUserTransactionList();}
 }

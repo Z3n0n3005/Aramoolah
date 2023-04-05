@@ -6,6 +6,7 @@ import com.example.aramoolah.data.dao.TransactionDao;
 import com.example.aramoolah.data.model.Transaction;
 
 import java.util.List;
+import java.util.Map;
 
 public class TransactionRepository {
     private TransactionDao transactionDao;
@@ -21,7 +22,13 @@ public class TransactionRepository {
     public void addTransaction(Transaction transaction){
         transactionDao.addTransaction(transaction);
     }
+    public Transaction getTransaction(Long transactionId){
+        return transactionDao.getTransaction(transactionId);
+    }
     public LiveData<List<Transaction>> getAllTransaction(){
         return transactionDao.getAllTransaction();
+    }
+    public Map<Integer, List<Long>> getUserTransactionList(){
+        return transactionDao.getUserTransactionList();
     }
 }

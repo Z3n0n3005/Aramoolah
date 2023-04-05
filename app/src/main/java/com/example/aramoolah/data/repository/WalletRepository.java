@@ -21,5 +21,5 @@ public class WalletRepository {
     public LiveData<List<Wallet>> getAllWallet(){return walletDao.getAllWallet();}
     public int getWalletId(String walletName){return walletDao.getWalletId(walletName);}
     public Wallet getWallet(Integer walletId){return walletDao.getWallet(walletId);}
-    public Map<Integer, List<Integer>> getAllTransactionWithWalletId(Integer walletId){return walletDao.getAllTransactionWithWalletId();}
+    public Map<Integer, List<Integer>> getWalletTransactionList(Integer walletId){return walletDao.getWalletTransactionList();}
 }

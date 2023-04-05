@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 public class Transaction {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "transactionId")
-    public long transactionId;
+    public Long transactionId;
     @ColumnInfo(name = "walletId")
     public Integer walletId;
     @ColumnInfo(name = "itemId")
