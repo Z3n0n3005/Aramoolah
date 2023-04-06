@@ -12,6 +12,7 @@ import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
 
 import org.javamoney.moneta.Money;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import javax.money.CurrencyUnit;
@@ -58,9 +59,10 @@ public class Initialize {
     }
     public void addTempTransaction(){
         CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
-        Money expense = Money.of(15000, currencyUnit);
+        BigInteger amount = BigInteger.valueOf(15000);
+        Money expense = Money.of(amount, currencyUnit);
 
         Transaction transaction = new Transaction(1, 1, TransactionType.EXPENSE, expense, 1, LocalDateTime.now());
-        mPersonalFinanceViewModel.addTransaction(transaction);
+        mPersonalFinanceViewModel.addTransaction(transaction, amount) ;
     }
 }

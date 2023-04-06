@@ -11,6 +11,8 @@ import androidx.room.Update;
 
 import com.example.aramoolah.data.model.Wallet;
 
+import org.javamoney.moneta.Money;
+
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,9 @@ public interface WalletDao {
 
     @Update
     void updateWallet(Wallet wallet);
+
+    @Query("UPDATE wallet_table SET totalAmount = :totalAmount WHERE walletId = :walletId")
+    void updateTotalAmount(Integer walletId, Money totalAmount);
 
     @Delete
     void deleteWallet(Wallet wallet);

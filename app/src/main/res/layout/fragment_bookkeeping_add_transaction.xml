@@ -7,14 +7,14 @@
     tools:context=".ui.fragment.BookkeepingAddTransactionFragment">
 
     <EditText
-        android:id="@+id/amountOfMoney_et"
+        android:id="@+id/cost_et"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="5dp"
         android:height="48dp"
-        android:hint="Amount"
+        android:hint="Cost"
         android:inputType="phone"
         app:layout_constraintEnd_toStartOf="@+id/addTransactionMultiple_txt"
         app:layout_constraintStart_toEndOf="@+id/transactionType_sp"
@@ -46,7 +46,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/amountOfMoney_et"
+        app:layout_constraintTop_toBottomOf="@+id/cost_et"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Spinner

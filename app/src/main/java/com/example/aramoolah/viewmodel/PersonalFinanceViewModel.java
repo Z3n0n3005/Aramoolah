@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.aramoolah.data.converter.Converter;
 import com.example.aramoolah.data.dao.ItemDao;
 import com.example.aramoolah.data.dao.TransactionDao;
 import com.example.aramoolah.data.database.PersonalFinanceDatabase;
@@ -26,10 +27,16 @@ import com.example.aramoolah.data.repository.WalletRepository;
 
 import org.javamoney.moneta.Money;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 
 public class PersonalFinanceViewModel extends AndroidViewModel {
     public User currentUser;
@@ -70,10 +77,32 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
     }
 
     // Transaction
-    public void addTransaction(Transaction transaction){
+    public void addTransaction(Transaction transaction, BigInteger cost){
         new Thread(new Runnable() {
             @Override
-            public void run() {transactionRepository.addTransaction(transaction);}
+            public void run() {
+                BigInteger walletTotalAmount = BigInteger.valueOf(0);
+                BigInteger updatedWalletTotalAmount = BigInteger.valueOf(0);
+                for(Wallet wallet: Objects.requireNonNull(currentUserWalletList.getValue())){
+                    if(wallet.walletId.equals(transaction.walletId)){
+                        walletTotalAmount = wallet.totalAmount.getNumberStripped().toBigInteger();
+                        break;
+                    }
+                }
+
+                if(transaction.transactionType.equals(TransactionType.EXPENSE)) {
+                    updatedWalletTotalAmount = walletTotalAmount.subtract(cost.multiply(BigInteger.valueOf(transaction.numberOfItem)));
+                }
+                if(transaction.transactionType.equals(TransactionType.INCOME)){
+                    updatedWalletTotalAmount = walletTotalAmount.add(cost.multiply(BigInteger.valueOf(transaction.numberOfItem)));
+                }
+
+                CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
+                Money updatedWalletMoney = Money.of(updatedWalletTotalAmount, currencyUnit);
+
+                transactionRepository.addTransaction(transaction);
+                walletRepository.updateTotalAmount(transaction.walletId, updatedWalletMoney);
+            }
         }).start();
     }
 

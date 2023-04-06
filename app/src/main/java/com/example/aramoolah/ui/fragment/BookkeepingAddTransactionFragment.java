@@ -31,6 +31,7 @@ import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
 
 import org.javamoney.moneta.Money;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +64,7 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
         mPersonalFinanceViewModel = new ViewModelProvider(this).get(PersonalFinanceViewModel.class);
         try {
             // Run Once
-//            runOnce();
+//            initializeDatabase();
             //Initialize
             List<Item> itemList = mPersonalFinanceViewModel.getCurrentUserItemList().getValue();
             List<ItemCategory> categoryList = Arrays.asList(ItemCategory.values());
@@ -78,10 +79,7 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        //TODO: Find a view that can type and quick search
-
-        //TODO: Auto choose category depending on Item
-
+        //TODO: Find a view that can type and quick search (low priority)
 
         // Submit button
         binding.submitBtn.setOnClickListener(new View.OnClickListener() {
@@ -103,13 +101,10 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-    }
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {}
 
     @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-    }
+    public void onNothingSelected(AdapterView<?> adapterView) {}
 
     private void setUpWalletSpinner(){
         Spinner walletSp = binding.walletSp;
@@ -124,7 +119,7 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
         // If want preselected first item
 //        walletSp.setAdapter(walletNamesAdapter);
 //        walletSp.setOnItemSelectedListener(this);
-        walletSp.setPrompt("Select a wallet");
+//        walletSp.setPrompt("Select a wallet");
     }
 
     private void setUpTransactionTypeSpinner(){
@@ -223,8 +218,8 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
 
     public void addTransaction() throws InterruptedException {
         //amountOfMoney
-        Integer amountOfMoneyInt = createAmountOfMoneyInt();
-        Money amountOfMoney = createAmountOfMoney();
+        BigInteger costInt = createCostInt();
+        Money cost = createCost();
 
         //numberOfItem
         Integer numberOfItem = createNumberOfItem();
@@ -238,40 +233,33 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
 
         //transactionType
         TransactionType transactionType = createTransactionType();
+//        Log.d("AddTransaction", "amountOfMoney: " + amountOfMoneyInt);
+//        Log.d("AddTransaction", "numberOfItem: " + numberOfItem);
+//        Log.d("AddTransaction", "walletId: " + walletId);
+//        Log.d("AddTransaction", "itemId: " + itemId);
+//        Log.d("AddTransaction", "transactionType: " + transactionType);
 
+        if(inputCheck(costInt,numberOfItem,walletId,itemId,transactionType)){
+            Transaction transaction = new Transaction(walletId,itemId, transactionType, cost, numberOfItem, LocalDateTime.now());
 
-        if(inputCheck(amountOfMoneyInt,numberOfItem,walletId,itemId,transactionType)){
-            Transaction transaction = new Transaction(walletId,itemId, transactionType, amountOfMoney, numberOfItem, LocalDateTime.now());
-            mPersonalFinanceViewModel.addTransaction(transaction);
+            mPersonalFinanceViewModel.addTransaction(transaction, costInt);
             Toast.makeText(requireContext(), "Successfully added transaction", Toast.LENGTH_SHORT).show();
+            //Navigate to bookeeping history fragment afterward
             Navigation.findNavController(binding.getRoot()).navigate(R.id.action_BookkeepingAddTransactionFragment_to_BookkeepingHistoryFragment);
         } else {
             Toast.makeText(requireContext(), "Please fill out all fields.", Toast.LENGTH_SHORT).show();
         }
 
     }
-
-
-//    public void logTemp() throws InterruptedException {
-//        mPersonalFinanceViewModel.setCurrentUser("John@gmail.com");
-//        User current = mPersonalFinanceViewModel.currentUser;
-//        Map<Integer, List<Integer>> userAndWalletList = mPersonalFinanceViewModel.getAllWalletOfCurrentUser();
-//        boolean isCurrentInMap = userAndWalletList.containsKey(current.userId);
-//        List<Integer> walletList = userAndWalletList.get(current.userId);
-//        for(Integer walletId : walletList){
-//            Log.d("ROOM RELATION", "logTemp: " + walletId);
-//        }
-//
-//    }
-    private Money createAmountOfMoney(){
+    private Money createCost(){
         CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
-        Integer amountOfMoneyInt = createAmountOfMoneyInt();
+        BigInteger amountOfMoneyInt = createCostInt();
         Money amountOfMoney = Money.of(amountOfMoneyInt, currencyUnit);
         return amountOfMoney;
     }
 
-    private Integer createAmountOfMoneyInt(){
-        return Integer.parseInt(binding.amountOfMoneyEt.getText().toString());
+    private BigInteger createCostInt(){
+        return BigInteger.valueOf(Integer.parseInt(binding.costEt.getText().toString()));
     }
 
     private Integer createNumberOfItem(){
@@ -297,14 +285,14 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
         return TransactionType.EXPENSE;
     }
 
-    private boolean inputCheck(Integer amountOfMoneyInt, Integer numberOfItem, Integer walletId, Integer itemId, TransactionType transactionType){
-        return (amountOfMoneyInt != null && amountOfMoneyInt >= 0)
+    private boolean inputCheck(BigInteger amountOfMoneyInt, Integer numberOfItem, Integer walletId, Integer itemId, TransactionType transactionType){
+        return (amountOfMoneyInt != null && amountOfMoneyInt.compareTo(BigInteger.valueOf(0)) > 0)
                 && (numberOfItem != null && numberOfItem > 0)
                 && (walletId != null)
                 && (itemId != null)
                 && (transactionType != null);
     }
-    public void runOnce() throws InterruptedException {
-        Initialize initialize = new Initialize(mPersonalFinanceViewModel, binding);
+    public void initializeDatabase() throws InterruptedException {
+        new Initialize(mPersonalFinanceViewModel, binding);
     }
 }
