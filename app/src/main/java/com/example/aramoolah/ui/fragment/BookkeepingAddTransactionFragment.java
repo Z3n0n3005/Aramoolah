@@ -42,7 +42,7 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
 public class BookkeepingAddTransactionFragment extends Fragment implements AdapterView.OnItemSelectedListener {
-
+    //TODO: Transfer money from 1 account to another.
     private FragmentBookkeepingAddTransactionBinding binding;
     private PersonalFinanceViewModel mPersonalFinanceViewModel;
 
@@ -126,7 +126,7 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
         Spinner transactionTypeSp = binding.transactionTypeSp;
         ArrayAdapter<CharSequence> transactionTypeAdapter = ArrayAdapter.createFromResource(
                 getActivity(),
-                R.array.transactionType,
+                R.array.transaction_type,
                 android.R.layout.simple_spinner_item
         );
         transactionTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -227,7 +227,6 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
         //walletId
         Integer walletId = createWalletId();
 
-        //TODO: change to query itemId auto;
         //itemId
         Integer itemId = createItemId();
 
