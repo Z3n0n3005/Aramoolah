@@ -43,6 +43,7 @@ import javax.money.Monetary;
 
 public class BookkeepingAddTransactionFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     //TODO: Transfer money from 1 account to another.
+    //TODO: Move submit button to navBar
     private FragmentBookkeepingAddTransactionBinding binding;
     private PersonalFinanceViewModel mPersonalFinanceViewModel;
 
