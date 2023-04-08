@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,9 +42,10 @@ import javax.money.Monetary;
 public class PersonalFinanceViewModel extends AndroidViewModel {
     public User currentUser;
 
-    MutableLiveData<List<Transaction>> currentUserTransactionList;
-    MutableLiveData<List<Item>> currentUserItemList;
-    MutableLiveData<List<Wallet>> currentUserWalletList;
+    private MutableLiveData<List<Transaction>> currentUserTransactionList;
+    private MutableLiveData<List<Item>> currentUserItemList;
+    private MutableLiveData<List<Wallet>> currentUserWalletList;
+    private MutableLiveData<Map<String, BigInteger>> mapMonthToMoney;
 
 
     TransactionRepository transactionRepository;
@@ -62,7 +64,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         // Transaction
         TransactionDao transactionDao = PersonalFinanceDatabase.getTransactionDatabase(application).transactionDao();
         transactionRepository = new TransactionRepository(transactionDao);
-        currentUserTransactionList = this.getCurrentUserTransaction();
+        currentUserTransactionList = this.getCurrentUserTransactionList();
 
         // Item
         ItemDao itemDao = PersonalFinanceDatabase.getTransactionDatabase(application).itemDao();
@@ -73,6 +75,9 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         WalletDao walletDao = PersonalFinanceDatabase.getTransactionDatabase(application).walletDao();
         walletRepository = new WalletRepository(walletDao);
         currentUserWalletList = this.getCurrentUserWalletList();
+
+        //MapMonthToMoney
+        mapMonthToMoney = getMapMonthToMoney();
 
     }
 
@@ -106,19 +111,6 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         }).start();
     }
 
-    public void updateTransaction(Transaction transaction){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {transactionRepository.addTransaction(transaction);}
-        }).start();
-    }
-
-    public void deleteTransaction(Transaction transaction){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {transactionRepository.deleteTransaction(transaction);}
-        }).start();
-    }
 
     public Transaction getTransaction(Long transactionId) throws InterruptedException {
         class Foo implements Runnable{
@@ -140,7 +132,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         return foo.getResult();
     }
 
-    public MutableLiveData<List<Transaction>> getCurrentUserTransaction() throws InterruptedException {
+    public MutableLiveData<List<Transaction>> getCurrentUserTransactionList() throws InterruptedException {
         class Foo implements Runnable{
             private volatile MutableLiveData<List<Transaction>> currentUserTransaction;
             @Override
@@ -182,23 +174,6 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         }).start();
     }
 
-    public void updateItem(Item item){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                itemRepository.updateItem(item);
-            }
-        }).start();
-    }
-
-    public void deleteItem(Item item){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                itemRepository.deleteItem(item);
-            }
-        }).start();
-    }
 
     public int getItemId(String itemName) throws InterruptedException {
         class Foo implements Runnable {
@@ -262,25 +237,6 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         return foo.getResult();
     }
 
-    public ItemCategory getItemCategory(String itemName) throws InterruptedException {
-        class Foo implements Runnable {
-            private volatile ItemCategory result;
-            @Override
-            public void run() {
-                result = itemRepository.getItemCategory(itemName);
-            }
-
-            public ItemCategory getResult() {
-                return result;
-            }
-        }
-        Foo foo = new Foo();
-        Thread thread = new Thread(foo);
-        thread.start();
-        thread.join();
-        return foo.getResult();
-    }
-
     public MutableLiveData<List<Item>> getCurrentUserItemList() throws InterruptedException {
         class Foo implements Runnable{
             private volatile MutableLiveData<List<Item>> currentUserItem;
@@ -320,24 +276,6 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
             @Override
             public void run() {
                 walletRepository.addWallet(wallet);
-            }
-        }).start();
-    }
-
-    public void updateWallet(Wallet wallet){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                walletRepository.updateWallet(wallet);
-            }
-        }).start();
-    }
-
-    public void deleteWallet(Wallet wallet){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                walletRepository.deleteWallet(wallet);
             }
         }).start();
     }
@@ -422,24 +360,6 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         }).start();
     }
 
-    public void updateUser(User user){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                userRepository.updateUser(user);
-            }
-        }).start();
-    }
-
-    public void deleteUser(User user){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                userRepository.deleteUser(user);
-            }
-        }).start();
-    }
-
     public int getUserId(String email) throws InterruptedException {
         class Foo implements Runnable {
             private volatile int result;
@@ -479,5 +399,46 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
 
     public void setCurrentUser(String email) throws InterruptedException {
         this.currentUser = getUser(email);
+    }
+
+    //getMapMonthToMoney
+    public MutableLiveData<Map<String, BigInteger>> getMapMonthToMoney() throws InterruptedException {
+        class Foo implements Runnable{
+            MutableLiveData<Map<String, BigInteger>> result = new MutableLiveData<>();
+
+            @Override
+            public void run() {
+                if(mapMonthToMoney == null) {
+                    String prevMonth = "";
+                    BigInteger currentSum = BigInteger.valueOf(0);
+                    Map<String, BigInteger> hashMapMonthToMoney = new HashMap<>();
+
+                    // Add entries into hashmap mapMonthToMoney
+                    for (Transaction transaction : Objects.requireNonNull(currentUserTransactionList.getValue())) {
+                        String currentMonth = transaction.localDateTime.getMonth().toString();
+                        BigInteger currentAmountOfMoney = transaction.amountOfMoney.getNumberStripped().toBigInteger();
+
+                        if (currentMonth.equals("") || currentMonth.equals(prevMonth)) {
+                            currentSum.add(currentAmountOfMoney);
+                        } else {
+                            hashMapMonthToMoney.put(prevMonth, currentSum);
+                            currentSum = currentAmountOfMoney;
+                        }
+                        prevMonth = currentMonth;
+                    }
+
+                    result.setValue(hashMapMonthToMoney);
+                } else {
+                    result = mapMonthToMoney;
+                }
+            }
+
+            public MutableLiveData<Map<String, BigInteger>> getResult(){return result;}
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
     }
 }
