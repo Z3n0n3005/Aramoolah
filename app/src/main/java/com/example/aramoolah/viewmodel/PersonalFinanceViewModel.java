@@ -1,83 +1,167 @@
 package com.example.aramoolah.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
-import com.example.aramoolah.data.ItemDao;
-import com.example.aramoolah.data.ItemDatabase;
-import com.example.aramoolah.data.TransactionDao;
-import com.example.aramoolah.data.TransactionDatabase;
-import com.example.aramoolah.data.UserDao;
-import com.example.aramoolah.data.UserDatabase;
-import com.example.aramoolah.data.WalletDao;
-import com.example.aramoolah.data.WalletDatabase;
-import com.example.aramoolah.model.Item;
-import com.example.aramoolah.model.User;
-import com.example.aramoolah.model.Wallet;
-import com.example.aramoolah.repository.ItemRepository;
-import com.example.aramoolah.repository.TransactionRepository;
-import com.example.aramoolah.model.Transaction;
-import com.example.aramoolah.repository.UserRepository;
-import com.example.aramoolah.repository.WalletRepository;
+import com.example.aramoolah.data.converter.Converter;
+import com.example.aramoolah.data.dao.ItemDao;
+import com.example.aramoolah.data.dao.TransactionDao;
+import com.example.aramoolah.data.database.PersonalFinanceDatabase;
+import com.example.aramoolah.data.dao.UserDao;
+import com.example.aramoolah.data.dao.WalletDao;
+import com.example.aramoolah.data.model.Item;
+import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.model.TransactionType;
+import com.example.aramoolah.data.model.User;
+import com.example.aramoolah.data.model.Wallet;
+import com.example.aramoolah.data.repository.ItemRepository;
+import com.example.aramoolah.data.repository.TransactionRepository;
+import com.example.aramoolah.data.model.Transaction;
+import com.example.aramoolah.data.repository.UserRepository;
+import com.example.aramoolah.data.repository.WalletRepository;
 
+import org.javamoney.moneta.Money;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 
 public class PersonalFinanceViewModel extends AndroidViewModel {
-    LiveData<List<Transaction>> readAllTransaction;
-    LiveData<List<Item>> readAllItem;
-    LiveData<List<Wallet>> readAllWallet;
+    public User currentUser;
+
+    private MutableLiveData<List<Transaction>> currentUserTransactionList;
+    private MutableLiveData<List<Item>> currentUserItemList;
+    private MutableLiveData<List<Wallet>> currentUserWalletList;
+    private MutableLiveData<Map<String, BigInteger>> mapMonthToMoney;
+
 
     TransactionRepository transactionRepository;
     ItemRepository itemRepository;
     WalletRepository walletRepository;
     UserRepository userRepository;
-    public PersonalFinanceViewModel(@NonNull Application application) {
+
+    public PersonalFinanceViewModel(@NonNull Application application) throws InterruptedException {
         super(application);
 
+        //User
+        UserDao userDao = PersonalFinanceDatabase.getTransactionDatabase(application).userDao();
+        userRepository = new UserRepository(userDao);
+        setCurrentUser("John@gmail.com");
+
         // Transaction
-        TransactionDao transactionDao = TransactionDatabase.getTransactionDatabase(application).transactionDao();
+        TransactionDao transactionDao = PersonalFinanceDatabase.getTransactionDatabase(application).transactionDao();
         transactionRepository = new TransactionRepository(transactionDao);
-        readAllTransaction = transactionDao.getAllTransaction();
+        currentUserTransactionList = this.getCurrentUserTransactionList();
 
         // Item
-        ItemDao itemDao = ItemDatabase.getItemDatabase(application).itemDao();
+        ItemDao itemDao = PersonalFinanceDatabase.getTransactionDatabase(application).itemDao();
         itemRepository = new ItemRepository(itemDao);
-        readAllItem = itemRepository.getAllItem();
+        currentUserItemList = this.getCurrentUserItemList();
 
         //Wallet
-        WalletDao walletDao = WalletDatabase.getWalletDatabase(application).walletDao();
+        WalletDao walletDao = PersonalFinanceDatabase.getTransactionDatabase(application).walletDao();
         walletRepository = new WalletRepository(walletDao);
-        readAllWallet = walletRepository.getAllWallet();
+        currentUserWalletList = this.getCurrentUserWalletList();
 
-        //User
-        UserDao userDao = UserDatabase.getUserDatabase(application).userDao();
-        userRepository = new UserRepository(userDao);
+        //MapMonthToMoney
+        mapMonthToMoney = getMapMonthToMoney();
 
     }
 
     // Transaction
-    public void addTransaction(Transaction transaction){
+    public void addTransaction(Transaction transaction, BigInteger cost){
         new Thread(new Runnable() {
             @Override
-            public void run() {transactionRepository.addTransaction(transaction);}
+            public void run() {
+                BigInteger walletTotalAmount = BigInteger.valueOf(0);
+                BigInteger updatedWalletTotalAmount = BigInteger.valueOf(0);
+                for(Wallet wallet: Objects.requireNonNull(currentUserWalletList.getValue())){
+                    if(wallet.walletId.equals(transaction.walletId)){
+                        walletTotalAmount = wallet.totalAmount.getNumberStripped().toBigInteger();
+                        break;
+                    }
+                }
+
+                if(transaction.transactionType.equals(TransactionType.EXPENSE)) {
+                    updatedWalletTotalAmount = walletTotalAmount.subtract(cost.multiply(BigInteger.valueOf(transaction.numberOfItem)));
+                }
+                if(transaction.transactionType.equals(TransactionType.INCOME)){
+                    updatedWalletTotalAmount = walletTotalAmount.add(cost.multiply(BigInteger.valueOf(transaction.numberOfItem)));
+                }
+
+                CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
+                Money updatedWalletMoney = Money.of(updatedWalletTotalAmount, currencyUnit);
+
+                transactionRepository.addTransaction(transaction);
+                walletRepository.updateTotalAmount(transaction.walletId, updatedWalletMoney);
+            }
         }).start();
     }
 
-    public void updateTransaction(Transaction transaction){
-        new Thread(new Runnable() {
+
+    public Transaction getTransaction(Long transactionId) throws InterruptedException {
+        class Foo implements Runnable{
+            private volatile Transaction transaction;
+
             @Override
-            public void run() {transactionRepository.addTransaction(transaction);}
-        }).start();
+            public void run() {
+                transaction = transactionRepository.getTransaction(transactionId);
+            }
+
+            public Transaction getResult(){
+                return transaction;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
     }
 
-    public void deleteTransaction(Transaction transaction){
-        new Thread(new Runnable() {
+    public MutableLiveData<List<Transaction>> getCurrentUserTransactionList() throws InterruptedException {
+        class Foo implements Runnable{
+            private volatile MutableLiveData<List<Transaction>> currentUserTransaction;
             @Override
-            public void run() {transactionRepository.deleteTransaction(transaction);}
-        }).start();
+            public void run() {
+                if(currentUserTransactionList == null) {
+                    Map<Integer, List<Long>> currentUserTransactionId = transactionRepository.getUserTransactionList();
+                    List<Long> transactionIdList = currentUserTransactionId.get(currentUser.userId);
+                    List<Transaction> transactionList = new ArrayList<>();
+                    for (Long transactionId : transactionIdList) {
+                        try {
+                            transactionList.add(getTransaction(transactionId));
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    currentUserTransaction = new MutableLiveData<>(transactionList);
+                } else {
+                    currentUserTransaction = currentUserTransactionList;
+                }
+            }
+            public MutableLiveData<List<Transaction>> getResult(){
+                return currentUserTransaction;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
     }
 
     // Item
@@ -90,26 +174,104 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         }).start();
     }
 
-    public void updateItem(Item item){
-        new Thread(new Runnable() {
+
+    public int getItemId(String itemName) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile int result;
             @Override
             public void run() {
-                itemRepository.updateItem(item);
+                result = itemRepository.getItemId(itemName);
             }
-        }).start();
+
+            public int getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
     }
 
-    public void deleteItem(Item item){
-        new Thread(new Runnable() {
+    public Item getItem(Integer itemId) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile Item result;
             @Override
             public void run() {
-                itemRepository.deleteItem(item);
+                result = itemRepository.getItem(itemId);
             }
-        }).start();
+
+            public Item getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public List<Item> getItemFromItemCategory(ItemCategory itemCategory) throws InterruptedException {
+        class Foo implements Runnable{
+            List<Item> currentItemList = currentUserItemList.getValue();
+            List<Item> filteredItemList = new ArrayList<>();
+            @Override
+            public void run() {
+                for(Item item: currentItemList){
+                    if(item.itemCategory.equals(itemCategory)) {
+                        filteredItemList.add(item);
+                    }
+                }
+            }
+
+            public List<Item> getResult(){
+                return filteredItemList;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public MutableLiveData<List<Item>> getCurrentUserItemList() throws InterruptedException {
+        class Foo implements Runnable{
+            private volatile MutableLiveData<List<Item>> currentUserItem;
+            @Override
+            public void run() {
+                if(currentUserItemList == null) {
+                    Map<Integer, List<Integer>> currentUserItemId = itemRepository.getUserItemList();
+                    List<Integer> itemIdList = currentUserItemId.get(currentUser.userId);
+                    List<Item> itemList = new ArrayList<>();
+                    for (Integer itemId : itemIdList) {
+                        try {
+                            itemList.add(getItem(itemId));
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    currentUserItem = new MutableLiveData<>(itemList);
+                } else {
+                    currentUserItem = currentUserItemList;
+                }
+            }
+            public MutableLiveData<List<Item>> getResult(){
+                return currentUserItem;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
     }
 
     // Wallet
     public void addWallet(Wallet wallet){
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -118,21 +280,165 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         }).start();
     }
 
-    public void updateWallet(Wallet wallet){
+    public int getWalletId(String walletName) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile int result;
+            @Override
+            public void run() {
+                result = walletRepository.getWalletId(walletName);
+            }
+
+            public int getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public Wallet getWallet(Integer walletId) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile Wallet result;
+            @Override
+            public void run() {
+                result = walletRepository.getWallet(walletId);
+            }
+
+            public Wallet getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public MutableLiveData<List<Wallet>> getCurrentUserWalletList() throws InterruptedException {
+        class Foo implements Runnable{
+            private volatile MutableLiveData<List<Wallet>> currentUserWallet = new MutableLiveData<>();
+            @Override
+            public void run() {
+                if(currentUserWalletList == null) {
+                    Map<Integer, List<Integer>> currentUserWalletId = userRepository.getCurrentUserWalletList();
+                    List<Integer> walletIdList = currentUserWalletId.get(currentUser.userId);
+                    List<Wallet> walletList = new ArrayList<>();
+                    for (Integer walletId : walletIdList) {
+                        try {
+                            walletList.add(getWallet(walletId));
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    currentUserWallet = new MutableLiveData<>(walletList);
+                } else {
+                    currentUserWallet = currentUserWalletList;
+                }
+            }
+            public MutableLiveData<List<Wallet>> getResult(){
+                return currentUserWallet;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    // User
+    public void addUser(User user){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                walletRepository.updateWallet(wallet);
+                userRepository.addUser(user);
             }
         }).start();
     }
 
-    public void deleteWallet(Wallet wallet){
-        new Thread(new Runnable() {
+    public int getUserId(String email) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile int result;
             @Override
             public void run() {
-                walletRepository.deleteWallet(wallet);
+                result = userRepository.getUserId(email);
             }
-        }).start();
+
+            public int getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+    public User getUser(String email) throws InterruptedException{
+        class Foo implements Runnable {
+            private volatile User result;
+            @Override
+            public void run() {
+                result = userRepository.getUser(email);
+            }
+
+            public User getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public void setCurrentUser(String email) throws InterruptedException {
+        this.currentUser = getUser(email);
+    }
+
+    //getMapMonthToMoney
+    public MutableLiveData<Map<String, BigInteger>> getMapMonthToMoney() throws InterruptedException {
+        class Foo implements Runnable{
+            MutableLiveData<Map<String, BigInteger>> result = new MutableLiveData<>();
+
+            @Override
+            public void run() {
+                if(mapMonthToMoney == null) {
+                    String prevMonth = "";
+                    BigInteger currentSum = BigInteger.valueOf(0);
+                    Map<String, BigInteger> hashMapMonthToMoney = new HashMap<>();
+
+                    // Add entries into hashmap mapMonthToMoney
+                    for (Transaction transaction : Objects.requireNonNull(currentUserTransactionList.getValue())) {
+                        String currentMonth = transaction.localDateTime.getMonth().toString();
+                        BigInteger currentAmountOfMoney = transaction.amountOfMoney.getNumberStripped().toBigInteger();
+
+                        if (currentMonth.equals("") || currentMonth.equals(prevMonth)) {
+                            currentSum.add(currentAmountOfMoney);
+                        } else {
+                            hashMapMonthToMoney.put(prevMonth, currentSum);
+                            currentSum = currentAmountOfMoney;
+                        }
+                        prevMonth = currentMonth;
+                    }
+
+                    result.setValue(hashMapMonthToMoney);
+                } else {
+                    result = mapMonthToMoney;
+                }
+            }
+
+            public MutableLiveData<Map<String, BigInteger>> getResult(){return result;}
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
     }
 }
