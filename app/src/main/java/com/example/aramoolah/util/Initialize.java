@@ -7,7 +7,7 @@ import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.model.Wallet;
-import com.example.aramoolah.databinding.FragmentBookkeepingAddTransactionBinding;
+import com.example.aramoolah.databinding.FragmentAddTransactionBinding;
 import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
 
 import org.javamoney.moneta.Money;
@@ -20,8 +20,8 @@ import javax.money.Monetary;
 
 public class Initialize {
     PersonalFinanceViewModel mPersonalFinanceViewModel;
-    FragmentBookkeepingAddTransactionBinding binding;
-    public Initialize(PersonalFinanceViewModel mPersonalFinanceViewModel, FragmentBookkeepingAddTransactionBinding binding) throws InterruptedException {
+    FragmentAddTransactionBinding binding;
+    public Initialize(PersonalFinanceViewModel mPersonalFinanceViewModel, FragmentAddTransactionBinding binding) throws InterruptedException {
         this.mPersonalFinanceViewModel = mPersonalFinanceViewModel;
         this.binding = binding;
         addUser();

@@ -1,4 +1,4 @@
-package com.example.aramoolah.ui.fragment;
+package com.example.aramoolah.ui.fragment.history;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +23,14 @@ import java.util.List;
 import java.util.Map;
 
 
-public class BookkeepingHistoryAdapter extends RecyclerView.Adapter<BookkeepingHistoryAdapter.RowAdapter> {
+public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.RowAdapter> {
 //    private LayoutBookkeepingHistoryRowBinding rowBinding;
     private List<Transaction> transactionList;
     private List<Item> itemList;
     private List<Wallet> walletList;
     private Map<String, BigInteger> mapMonthToMoney;
 
-    public BookkeepingHistoryAdapter(){
+    public HistoryAdapter(){
         transactionList = new ArrayList<>();
         itemList = new ArrayList<>();
         walletList = new ArrayList<>();
@@ -39,20 +39,20 @@ public class BookkeepingHistoryAdapter extends RecyclerView.Adapter<BookkeepingH
 
     @NonNull
     @Override
-    public BookkeepingHistoryAdapter.RowAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //TODO: Create BookkeepingHistoryAdapter
+    public HistoryAdapter.RowAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //TODO: Create HistoryAdapter
         //TODO: Color coding TransactionType -> (+): Green, (-): Red
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 //        rowBinding = LayoutBookkeepingHistoryRowBinding.inflate(inflater, parent, false);
 
 
-        View view = inflater.inflate(R.layout.layout_bookkeeping_history_row, parent, false);
+        View view = inflater.inflate(R.layout.layout_recycler_history_row, parent, false);
         return new RowAdapter(view);
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BookkeepingHistoryAdapter.RowAdapter holder, int position) {
+    public void onBindViewHolder(@NonNull HistoryAdapter.RowAdapter holder, int position) {
         Transaction transaction = transactionList.get(position);
         if(transaction.transactionType.equals(TransactionType.EXPENSE)){
             holder.transactionType_txt.setText("-");

@@ -1,4 +1,4 @@
-package com.example.aramoolah.ui.fragment;
+package com.example.aramoolah.ui.fragment.history;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,24 +17,24 @@ import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.Wallet;
-import com.example.aramoolah.databinding.FragmentBookkeepingHistoryBinding;
+import com.example.aramoolah.databinding.FragmentHistoryBinding;
 import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
 
 import java.util.List;
 
-public class BookkeepingHistoryFragment extends Fragment {
+public class HistoryFragment extends Fragment {
 
-    private FragmentBookkeepingHistoryBinding binding;
+    private FragmentHistoryBinding binding;
     private PersonalFinanceViewModel mPersonalFinanceViewModel;
     private RecyclerView history_recycler;
-    private BookkeepingHistoryAdapter rowAdapter;
+    private HistoryAdapter rowAdapter;
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        binding = FragmentBookkeepingHistoryBinding.inflate(inflater, container, false);
+        binding = FragmentHistoryBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
     }
@@ -44,7 +44,7 @@ public class BookkeepingHistoryFragment extends Fragment {
 
         mPersonalFinanceViewModel = new ViewModelProvider(this).get(PersonalFinanceViewModel.class);
 
-        rowAdapter = new BookkeepingHistoryAdapter();
+        rowAdapter = new HistoryAdapter();
         history_recycler = binding.bookkeepingHistoryRecycler;
         history_recycler.setAdapter(rowAdapter);
         history_recycler.setLayoutManager(new LinearLayoutManager(getContext()));

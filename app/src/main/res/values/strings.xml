@@ -21,4 +21,6 @@
 
     // bookkeeping_fragment
     <string name="total_amount_symbol">Σ</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_history">History</string>
 </resources>

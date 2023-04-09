@@ -3,13 +3,11 @@ package com.example.aramoolah.ui.activity;
 import android.os.Bundle;
 
 import com.example.aramoolah.R;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.MenuInflater;
-import android.view.View;
 
 import androidx.core.view.MenuProvider;
 import androidx.navigation.NavController;
@@ -18,21 +16,21 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.aramoolah.databinding.ActivityBookkeepingBinding;
+import com.example.aramoolah.databinding.ActivityPersonalFinanceBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class BookkeepingActivity extends AppCompatActivity {
+public class PersonalFinanceActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
-    private ActivityBookkeepingBinding binding;
+    private ActivityPersonalFinanceBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityBookkeepingBinding.inflate(getLayoutInflater());
+        binding = ActivityPersonalFinanceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
@@ -54,6 +52,7 @@ public class BookkeepingActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.bottomNav, navController);
 
 
     }
