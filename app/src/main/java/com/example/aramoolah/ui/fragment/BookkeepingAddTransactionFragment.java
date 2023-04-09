@@ -233,11 +233,6 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
 
         //transactionType
         TransactionType transactionType = createTransactionType();
-//        Log.d("AddTransaction", "amountOfMoney: " + amountOfMoneyInt);
-//        Log.d("AddTransaction", "numberOfItem: " + numberOfItem);
-//        Log.d("AddTransaction", "walletId: " + walletId);
-//        Log.d("AddTransaction", "itemId: " + itemId);
-//        Log.d("AddTransaction", "transactionType: " + transactionType);
 
         if(inputCheck(costInt,numberOfItem,walletId,itemId,transactionType)){
             Transaction transaction = new Transaction(walletId,itemId, transactionType, cost, numberOfItem, LocalDateTime.now());
@@ -277,7 +272,6 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
 
     private TransactionType createTransactionType(){
         String transactionTypeStr = binding.transactionTypeSp.getSelectedItem().toString();
-        TransactionType transactionType;
 
         if(transactionTypeStr.equals("+")){
             return TransactionType.INCOME;

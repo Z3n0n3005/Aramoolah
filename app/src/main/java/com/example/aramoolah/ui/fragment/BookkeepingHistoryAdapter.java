@@ -13,42 +13,46 @@ import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.Wallet;
-import com.example.aramoolah.databinding.LayoutBookkeepingHistoryRowBinding;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
-public class BookkeepingHistoryRowAdapter extends RecyclerView.Adapter<BookkeepingHistoryRowAdapter.MyViewHolder> {
+public class BookkeepingHistoryAdapter extends RecyclerView.Adapter<BookkeepingHistoryAdapter.RowAdapter> {
 //    private LayoutBookkeepingHistoryRowBinding rowBinding;
     private List<Transaction> transactionList;
     private List<Item> itemList;
     private List<Wallet> walletList;
+    private Map<String, BigInteger> mapMonthToMoney;
 
-    public BookkeepingHistoryRowAdapter(){
+    public BookkeepingHistoryAdapter(){
         transactionList = new ArrayList<>();
         itemList = new ArrayList<>();
         walletList = new ArrayList<>();
+        mapMonthToMoney = new HashMap<>();
     }
 
     @NonNull
     @Override
-    public BookkeepingHistoryRowAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //TODO: Create BookkeepingHistoryRowAdapter
+    public BookkeepingHistoryAdapter.RowAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //TODO: Create BookkeepingHistoryAdapter
         //TODO: Color coding TransactionType -> (+): Green, (-): Red
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 //        rowBinding = LayoutBookkeepingHistoryRowBinding.inflate(inflater, parent, false);
 
 
         View view = inflater.inflate(R.layout.layout_bookkeeping_history_row, parent, false);
-        return new MyViewHolder(view);
+        return new RowAdapter(view);
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BookkeepingHistoryRowAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull BookkeepingHistoryAdapter.RowAdapter holder, int position) {
         Transaction transaction = transactionList.get(position);
         if(transaction.transactionType.equals(TransactionType.EXPENSE)){
             holder.transactionType_txt.setText("-");
@@ -79,8 +83,14 @@ public class BookkeepingHistoryRowAdapter extends RecyclerView.Adapter<Bookkeepi
 
     @Override
     public int getItemCount() {
+
         return transactionList.size();
     }
+
+//    @Override
+//    public int getItemViewType(int position){
+//
+//    }
 
     public void updateTransactionList(List<Transaction> transactionList){
         this.transactionList.clear();
@@ -101,10 +111,16 @@ public class BookkeepingHistoryRowAdapter extends RecyclerView.Adapter<Bookkeepi
         notifyDataSetChanged();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public void updateMapMonthToMoney(Map<String, BigInteger> mapMonthToMoney){
+        this.mapMonthToMoney.clear();
+        this.mapMonthToMoney = mapMonthToMoney;
+        notifyDataSetChanged();
+    }
+
+    public class RowAdapter extends RecyclerView.ViewHolder {
         TextView transactionType_txt, money_txt, itemCategory_txt, wallet_txt, time_txt;
 
-        public MyViewHolder(@NonNull View view){
+        public RowAdapter(@NonNull View view){
             super(view);
             this.transactionType_txt = view.findViewById(R.id.bookkeeping_transaction_type_txt);
             this.money_txt = view.findViewById(R.id.bookkeeping_money_txt);
