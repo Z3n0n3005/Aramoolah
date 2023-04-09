@@ -2,8 +2,9 @@
     <string name="app_name">Aramoolah</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="bookkeeping_history_fragment_label">History</string>
-    <string name="second_fragment_label">Add Transaction</string>
+    <string name="history_fragment_label">History</string>
+    <string name="add_transaction_fragment_label">Add Transaction</string>
+    <string name="dashboard_fragment_label">Dashboard</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 

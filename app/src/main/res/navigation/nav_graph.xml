@@ -3,27 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/HistoryFragment">
+    app:startDestination="@id/nav_history_fragment">
 
     <fragment
-        android:id="@+id/HistoryFragment"
+        android:id="@+id/nav_history_fragment"
         android:name="com.example.aramoolah.ui.fragment.history.HistoryFragment"
-        android:label="@string/bookkeeping_history_fragment_label"
+        android:label="@string/history_fragment_label"
         tools:layout="@layout/fragment_history">
 
         <action
             android:id="@+id/action_HistoryFragment_to_AddTransactionFragment"
-            app:destination="@id/AddTransactionFragment" />
+            app:destination="@id/nav_add_transaction_fragment" />
     </fragment>
     <fragment
-        android:id="@+id/AddTransactionFragment"
+        android:id="@+id/nav_add_transaction_fragment"
         android:name="com.example.aramoolah.ui.fragment.addtransaction.AddTransactionFragment"
-        android:label="@string/second_fragment_label"
+        android:label="@string/add_transaction_fragment_label"
         tools:layout="@layout/fragment_add_transaction">
 
         <action
             android:id="@+id/action_BookkeepingAddTransactionFragment_to_BookkeepingHistoryFragment"
-            app:destination="@id/HistoryFragment" />
+            app:destination="@id/nav_history_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_dashboard_fragment"
+        android:name="com.example.aramoolah.ui.fragment.dashboard.DashboardFragment"
+        android:label="@string/dashboard_fragment_label"
+        tools:layout="@layout/fragment_dashboard">
     </fragment>
 
 </navigation>

@@ -404,7 +404,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
     //getMapMonthToMoney
     public MutableLiveData<Map<String, BigInteger>> getMapMonthToMoney() throws InterruptedException {
         class Foo implements Runnable{
-            MutableLiveData<Map<String, BigInteger>> result = new MutableLiveData<>();
+            MutableLiveData<Map<String, BigInteger>> result;
 
             @Override
             public void run() {
@@ -427,7 +427,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
                         prevMonth = currentMonth;
                     }
 
-                    result.setValue(hashMapMonthToMoney);
+                    result = new MutableLiveData<>(hashMapMonthToMoney);
                 } else {
                     result = mapMonthToMoney;
                 }
