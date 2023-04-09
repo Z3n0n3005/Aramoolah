@@ -45,7 +45,7 @@ public class HistoryFragment extends Fragment {
         mPersonalFinanceViewModel = new ViewModelProvider(this).get(PersonalFinanceViewModel.class);
 
         rowAdapter = new HistoryAdapter();
-        history_recycler = binding.bookkeepingHistoryRecycler;
+        history_recycler = binding.historyRecycler;
         history_recycler.setAdapter(rowAdapter);
         history_recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         try {
@@ -57,10 +57,10 @@ public class HistoryFragment extends Fragment {
         }
 
         // Add Transaction button navigation
-        binding.bookkeepingAddTransactionBtn.setOnClickListener(new View.OnClickListener() {
+        binding.addTransactionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_BookkeepingHistoryFragment_to_BookkeepingAddTransactionFragment);
+                Navigation.findNavController(view).navigate(R.id.action_HistoryFragment_to_AddTransactionFragment);
             }
         });
     }

@@ -7,12 +7,12 @@
     tools:context=".ui.fragment.history.HistoryFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/bookkeeping_history_recycler"
+        android:id="@+id/history_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/bookkeeping_add_transaction_btn"
+        android:id="@+id/add_transaction_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"

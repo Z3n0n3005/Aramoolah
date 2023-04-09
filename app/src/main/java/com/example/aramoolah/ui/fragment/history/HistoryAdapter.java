@@ -122,11 +122,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.RowAdapt
 
         public RowAdapter(@NonNull View view){
             super(view);
-            this.transactionType_txt = view.findViewById(R.id.bookkeeping_transaction_type_txt);
-            this.money_txt = view.findViewById(R.id.bookkeeping_money_txt);
-            this.itemCategory_txt = view.findViewById(R.id.bookkeeping_category_txt);
-            this.wallet_txt = view.findViewById(R.id.bookkeeping_wallet_txt);
-            this.time_txt = view.findViewById(R.id.bookkeeping_time_txt);
+            this.transactionType_txt = view.findViewById(R.id.history_transaction_type_txt);
+            this.money_txt = view.findViewById(R.id.history_money_txt);
+            this.itemCategory_txt = view.findViewById(R.id.history_category_txt);
+            this.wallet_txt = view.findViewById(R.id.history_wallet_txt);
+            this.time_txt = view.findViewById(R.id.history_time_txt);
         }
     }
 }
