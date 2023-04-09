@@ -2,11 +2,23 @@
     <string name="app_name">Aramoolah</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="bookkeeping_history_fragment_label">History</string>
+    <string name="second_fragment_label">Add Transaction</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    // fragment_bookkeeping_add_transaction
+    <string-array name="wallet">
+        <item>Cash</item>
+        <item>Bank</item>
+    </string-array>
+    <string-array name="transaction_type">
+        <item>+</item>
+        <item>-</item>
+    </string-array>
+    <string name="nothing_selected_layout_text">"Select one …"</string>
+
+
+    // bookkeeping_fragment
+    <string name="total_amount_symbol">Σ</string>
 </resources>
