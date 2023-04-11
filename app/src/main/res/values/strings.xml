@@ -24,4 +24,6 @@
     <string name="total_amount_symbol">Σ</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_history">History</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
