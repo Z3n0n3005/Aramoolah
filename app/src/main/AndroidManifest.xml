@@ -12,9 +12,8 @@
         android:theme="@style/Theme.Aramoolah"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activity.BookkeepingActivity"
+            android:name=".ui.activity.PersonalFinanceActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Aramoolah.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
