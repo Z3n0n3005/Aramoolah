@@ -18,6 +18,7 @@ import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.databinding.FragmentHistoryBinding;
+import com.example.aramoolah.viewmodel.HistoryViewModel;
 import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
 
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
 public class HistoryFragment extends Fragment {
 
     private FragmentHistoryBinding binding;
-    private PersonalFinanceViewModel mPersonalFinanceViewModel;
+    private HistoryViewModel mHistoryViewModel;
     private RecyclerView history_recycler;
     private HistoryAdapter rowAdapter;
 
@@ -42,16 +43,16 @@ public class HistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mPersonalFinanceViewModel = new ViewModelProvider(this).get(PersonalFinanceViewModel.class);
+        mHistoryViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
 
         rowAdapter = new HistoryAdapter();
         history_recycler = binding.historyRecycler;
         history_recycler.setAdapter(rowAdapter);
         history_recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         try {
-            mPersonalFinanceViewModel.getCurrentUserTransactionList().observe(getViewLifecycleOwner(), transactionListObserver);
-            mPersonalFinanceViewModel.getCurrentUserItemList().observe(getViewLifecycleOwner(), itemListObserver);
-            mPersonalFinanceViewModel.getCurrentUserWalletList().observe(getViewLifecycleOwner(), walletListObserver);
+            mHistoryViewModel.getCurrentUserTransactionList().observe(getViewLifecycleOwner(), transactionListObserver);
+            mHistoryViewModel.getCurrentUserItemList().observe(getViewLifecycleOwner(), itemListObserver);
+            mHistoryViewModel.getCurrentUserWalletList().observe(getViewLifecycleOwner(), walletListObserver);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -22,7 +22,7 @@ import com.example.aramoolah.databinding.FragmentAddTransactionBinding;
 import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.util.Initialize;
-import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
+import com.example.aramoolah.viewmodel.AddTransactionViewModel;
 
 import org.javamoney.moneta.Money;
 
@@ -39,7 +39,8 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
     //TODO: Transfer money from 1 account to another.
     //TODO: Move submit button to navBar
     private FragmentAddTransactionBinding binding;
-    private PersonalFinanceViewModel mPersonalFinanceViewModel;
+    private AddTransactionViewModel mAddTransactionViewModel;
+
 
     @Override
     public View onCreateView(
@@ -56,12 +57,12 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
         super.onViewCreated(view, savedInstanceState);
 
         // PersonalFinanceViewModel
-        mPersonalFinanceViewModel = new ViewModelProvider(this).get(PersonalFinanceViewModel.class);
+        mAddTransactionViewModel = new ViewModelProvider(this).get(AddTransactionViewModel.class);
         try {
             // Run Once
 //            initializeDatabase();
             //Initialize
-            List<Item> itemList = mPersonalFinanceViewModel.getCurrentUserItemList().getValue();
+            List<Item> itemList = mAddTransactionViewModel.getCurrentUserItemList().getValue();
             List<ItemCategory> categoryList = Arrays.asList(ItemCategory.values());
             // Transaction type transactionType_sp
             setUpItemCategorySpinner(categoryList);
@@ -105,7 +106,7 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
         Spinner walletSp = binding.walletSp;
         List<Wallet> walletList;
         try {
-            walletList = mPersonalFinanceViewModel.getCurrentUserWalletList().getValue();
+            walletList = mAddTransactionViewModel.getCurrentUserWalletList().getValue();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -146,7 +147,7 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
                     if(item != null) {
                         if (!itemCategory.equals(item.itemCategory)) {
                             try {
-                                filteredItemList = mPersonalFinanceViewModel.getItemFromItemCategory(itemCategory);
+                                filteredItemList = mAddTransactionViewModel.getItemFromItemCategory(itemCategory);
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
@@ -155,7 +156,7 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
                     }
                     if(item == null){
                         try {
-                            filteredItemList = mPersonalFinanceViewModel.getItemFromItemCategory(itemCategory);
+                            filteredItemList = mAddTransactionViewModel.getItemFromItemCategory(itemCategory);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
@@ -231,7 +232,7 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
         if(inputCheck(costInt,numberOfItem,walletId,itemId,transactionType)){
             Transaction transaction = new Transaction(walletId,itemId, transactionType, cost, numberOfItem, LocalDateTime.now());
 
-            mPersonalFinanceViewModel.addTransaction(transaction, costInt);
+            mAddTransactionViewModel.addTransaction(transaction, costInt);
             Toast.makeText(requireContext(), "Successfully added transaction", Toast.LENGTH_SHORT).show();
             //Navigate to bookeeping history fragment afterward
             Navigation.findNavController(binding.getRoot()).navigate(R.id.action_BookkeepingAddTransactionFragment_to_BookkeepingHistoryFragment);
@@ -256,11 +257,11 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
     }
 
     private Integer createWalletId() throws InterruptedException {
-        return mPersonalFinanceViewModel.getWalletId(binding.walletSp.getSelectedItem().toString());
+        return mAddTransactionViewModel.getWalletId(binding.walletSp.getSelectedItem().toString());
     }
 
     private Integer createItemId() throws InterruptedException {
-        Integer itemId = mPersonalFinanceViewModel.getItemId(binding.itemNameSp.getSelectedItem().toString());
+        Integer itemId = mAddTransactionViewModel.getItemId(binding.itemNameSp.getSelectedItem().toString());
         return itemId;
     }
 
@@ -281,6 +282,6 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
                 && (transactionType != null);
     }
     public void initializeDatabase() throws InterruptedException {
-        new Initialize(mPersonalFinanceViewModel, binding);
+        new Initialize(mAddTransactionViewModel, binding);
     }
 }

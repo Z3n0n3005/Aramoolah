@@ -8,6 +8,7 @@ import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.databinding.FragmentAddTransactionBinding;
+import com.example.aramoolah.viewmodel.AddTransactionViewModel;
 import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
 
 import org.javamoney.moneta.Money;
@@ -19,43 +20,43 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
 public class Initialize {
-    PersonalFinanceViewModel mPersonalFinanceViewModel;
+    AddTransactionViewModel mAddTransactionViewModel;
     FragmentAddTransactionBinding binding;
-    public Initialize(PersonalFinanceViewModel mPersonalFinanceViewModel, FragmentAddTransactionBinding binding) throws InterruptedException {
-        this.mPersonalFinanceViewModel = mPersonalFinanceViewModel;
+    public Initialize(AddTransactionViewModel mAddTransactionViewModel, FragmentAddTransactionBinding binding) throws InterruptedException {
+        this.mAddTransactionViewModel = mAddTransactionViewModel;
         this.binding = binding;
         addUser();
         addWallet();
         addItem();
         addTempTransaction();
-        mPersonalFinanceViewModel.setCurrentUser("John@gmail.com");
+        mAddTransactionViewModel.setCurrentUser("John@gmail.com");
     }
 
     public void addUser(){
         User user = new User("John","John","John","John@gmail.com","12345");
-        mPersonalFinanceViewModel.addUser(user);
+        mAddTransactionViewModel.addUser(user);
     }
     //
     public void addWallet() throws InterruptedException {
         CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
         Money money = Money.of(200000000, currencyUnit);
 
-        Wallet wallet = new Wallet(mPersonalFinanceViewModel.getUserId("John@gmail.com"), "Cash", money);
-        mPersonalFinanceViewModel.addWallet(wallet);
+        Wallet wallet = new Wallet(mAddTransactionViewModel.getUserId("John@gmail.com"), "Cash", money);
+        mAddTransactionViewModel.addWallet(wallet);
     }
     //
     public void addItem() throws InterruptedException {
         CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
         Money redbull = Money.of(15000, currencyUnit);
-        Integer userId = mPersonalFinanceViewModel.getUserId("John@gmail.com");
+        Integer userId = mAddTransactionViewModel.getUserId("John@gmail.com");
 
         Item item = new Item(userId, "redbull", redbull, ItemCategory.DRINK);
-        mPersonalFinanceViewModel.addItem(item);
+        mAddTransactionViewModel.addItem(item);
 
         Money cake = Money.of(20000, currencyUnit);
 
         Item item2 = new Item(userId, "cake", cake, ItemCategory.FOOD);
-        mPersonalFinanceViewModel.addItem(item2);
+        mAddTransactionViewModel.addItem(item2);
     }
     public void addTempTransaction(){
         CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
@@ -63,6 +64,6 @@ public class Initialize {
         Money expense = Money.of(amount, currencyUnit);
 
         Transaction transaction = new Transaction(1, 1, TransactionType.EXPENSE, expense, 1, LocalDateTime.now());
-        mPersonalFinanceViewModel.addTransaction(transaction, amount) ;
+        mAddTransactionViewModel.addTransaction(transaction, amount) ;
     }
 }
