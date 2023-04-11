@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import com.example.aramoolah.data.converter.Converter;
 import com.example.aramoolah.data.dao.ItemDao;
@@ -140,7 +141,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
                 if(currentUserTransactionList == null) {
                     Map<Integer, List<Long>> currentUserTransactionId = transactionRepository.getUserTransactionList();
                     List<Long> transactionIdList = currentUserTransactionId.get(currentUser.userId);
-                    List<Transaction> transactionList = new ArrayList<>();
+                    List<Transaction> transactionList = null;
                     for (Long transactionId : transactionIdList) {
                         try {
                             transactionList.add(getTransaction(transactionId));
@@ -215,10 +216,11 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
 
     public List<Item> getItemFromItemCategory(ItemCategory itemCategory) throws InterruptedException {
         class Foo implements Runnable{
-            List<Item> currentItemList = currentUserItemList.getValue();
-            List<Item> filteredItemList = new ArrayList<>();
+            final List<Item> currentItemList = currentUserItemList.getValue();
+            final List<Item> filteredItemList = new ArrayList<>();
             @Override
             public void run() {
+                assert currentItemList != null;
                 for(Item item: currentItemList){
                     if(item.itemCategory.equals(itemCategory)) {
                         filteredItemList.add(item);
@@ -246,6 +248,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
                     Map<Integer, List<Integer>> currentUserItemId = itemRepository.getUserItemList();
                     List<Integer> itemIdList = currentUserItemId.get(currentUser.userId);
                     List<Item> itemList = new ArrayList<>();
+                    assert itemIdList != null;
                     for (Integer itemId : itemIdList) {
                         try {
                             itemList.add(getItem(itemId));
@@ -327,6 +330,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
                     Map<Integer, List<Integer>> currentUserWalletId = userRepository.getCurrentUserWalletList();
                     List<Integer> walletIdList = currentUserWalletId.get(currentUser.userId);
                     List<Wallet> walletList = new ArrayList<>();
+                    assert walletIdList != null;
                     for (Integer walletId : walletIdList) {
                         try {
                             walletList.add(getWallet(walletId));
@@ -404,22 +408,25 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
     //getMapMonthToMoney
     public MutableLiveData<Map<String, BigInteger>> getMapMonthToMoney() throws InterruptedException {
         class Foo implements Runnable{
-            MutableLiveData<Map<String, BigInteger>> result = new MutableLiveData<>();
+            MutableLiveData<Map<String, BigInteger>> result;
 
             @Override
             public void run() {
                 if(mapMonthToMoney == null) {
                     String prevMonth = "";
-                    BigInteger currentSum = BigInteger.valueOf(0);
+                    BigInteger currentSum = BigInteger.ZERO;
                     Map<String, BigInteger> hashMapMonthToMoney = new HashMap<>();
 
                     // Add entries into hashmap mapMonthToMoney
-                    for (Transaction transaction : Objects.requireNonNull(currentUserTransactionList.getValue())) {
+                    Transformations.map(currentUserTransactionList, transaction -> {
+                    LiveData<List<Transaction>> transactionList = Transformations.map(currentUserTransactionList, transactions -> {return transactions;});
+                    });
+                    for (Transaction transaction : Transformations) {
                         String currentMonth = transaction.localDateTime.getMonth().toString();
                         BigInteger currentAmountOfMoney = transaction.amountOfMoney.getNumberStripped().toBigInteger();
 
                         if (currentMonth.equals("") || currentMonth.equals(prevMonth)) {
-                            currentSum.add(currentAmountOfMoney);
+                            currentSum = currentSum.add(currentAmountOfMoney);
                         } else {
                             hashMapMonthToMoney.put(prevMonth, currentSum);
                             currentSum = currentAmountOfMoney;
@@ -427,7 +434,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
                         prevMonth = currentMonth;
                     }
 
-                    result.setValue(hashMapMonthToMoney);
+                    result = new MutableLiveData<>(hashMapMonthToMoney);
                 } else {
                     result = mapMonthToMoney;
                 }

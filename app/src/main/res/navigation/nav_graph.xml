@@ -3,26 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/BookkeepingHistoryFragment">
+    app:startDestination="@id/nav_history_fragment">
 
     <fragment
-        android:id="@+id/BookkeepingHistoryFragment"
-        android:name="com.example.aramoolah.ui.fragment.BookkeepingHistoryFragment"
-        android:label="@string/bookkeeping_history_fragment_label"
-        tools:layout="@layout/fragment_bookkeeping_history">
+        android:id="@+id/nav_history_fragment"
+        android:name="com.example.aramoolah.ui.fragment.history.HistoryFragment"
+        android:label="@string/history_fragment_label"
+        tools:layout="@layout/fragment_history">
 
         <action
-            android:id="@+id/action_BookkeepingHistoryFragment_to_BookkeepingAddTransactionFragment"
-            app:destination="@id/BookkeepingAddTransactionFragment" />
+            android:id="@+id/action_HistoryFragment_to_AddTransactionFragment"
+            app:destination="@id/nav_add_transaction_fragment" />
     </fragment>
     <fragment
-        android:id="@+id/BookkeepingAddTransactionFragment"
-        android:name="com.example.aramoolah.ui.fragment.BookkeepingAddTransactionFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_bookkeeping_add_transaction">
+        android:id="@+id/nav_add_transaction_fragment"
+        android:name="com.example.aramoolah.ui.fragment.addtransaction.AddTransactionFragment"
+        android:label="@string/add_transaction_fragment_label"
+        tools:layout="@layout/fragment_add_transaction">
 
         <action
             android:id="@+id/action_BookkeepingAddTransactionFragment_to_BookkeepingHistoryFragment"
-            app:destination="@id/BookkeepingHistoryFragment" />
+            app:destination="@id/nav_history_fragment" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_dashboard_fragment"
+        android:name="com.example.aramoolah.ui.fragment.dashboard.DashboardFragment"
+        android:label="@string/dashboard_fragment_label"
+        tools:layout="@layout/fragment_dashboard">
+    </fragment>
+
 </navigation>

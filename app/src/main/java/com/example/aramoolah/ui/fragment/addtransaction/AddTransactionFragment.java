@@ -1,20 +1,16 @@
-package com.example.aramoolah.ui.fragment;
+package com.example.aramoolah.ui.fragment.addtransaction;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -22,8 +18,7 @@ import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.ItemCategory;
 import com.example.aramoolah.data.model.Transaction;
-import com.example.aramoolah.data.model.User;
-import com.example.aramoolah.databinding.FragmentBookkeepingAddTransactionBinding;
+import com.example.aramoolah.databinding.FragmentAddTransactionBinding;
 import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.util.Initialize;
@@ -36,15 +31,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
-public class BookkeepingAddTransactionFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class AddTransactionFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     //TODO: Transfer money from 1 account to another.
     //TODO: Move submit button to navBar
-    private FragmentBookkeepingAddTransactionBinding binding;
+    private FragmentAddTransactionBinding binding;
     private PersonalFinanceViewModel mPersonalFinanceViewModel;
 
     @Override
@@ -53,7 +47,7 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
             Bundle savedInstanceState
     ) {
 
-        binding = FragmentBookkeepingAddTransactionBinding.inflate(inflater, container, false);
+        binding = FragmentAddTransactionBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
     }
@@ -212,7 +206,7 @@ public class BookkeepingAddTransactionFragment extends Fragment implements Adapt
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return new NothingSelectedSpinnerAdapter(
             arrayAdapter,
-            R.layout.spinner_row_nothing_selected_layout,
+            R.layout.layout_spinner_row_nothing_selected,
             getActivity()
         );
     }
