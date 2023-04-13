@@ -235,7 +235,7 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
             mAddTransactionViewModel.addTransaction(transaction, costInt);
             Toast.makeText(requireContext(), "Successfully added transaction", Toast.LENGTH_SHORT).show();
             //Navigate to bookeeping history fragment afterward
-            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_BookkeepingAddTransactionFragment_to_BookkeepingHistoryFragment);
+            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_add_transaction_fragment_to_nav_history_fragment);
         } else {
             Toast.makeText(requireContext(), "Please fill out all fields.", Toast.LENGTH_SHORT).show();
         }
@@ -244,8 +244,7 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
     private Money createCost(){
         CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
         BigInteger amountOfMoneyInt = createCostInt();
-        Money amountOfMoney = Money.of(amountOfMoneyInt, currencyUnit);
-        return amountOfMoney;
+        return Money.of(amountOfMoneyInt, currencyUnit);
     }
 
     private BigInteger createCostInt(){

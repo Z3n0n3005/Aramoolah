@@ -8,7 +8,40 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="AddTransactionFragment">
+                  <entry key="addWalletFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="337" />
+                            <option name="y" value="5" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="nav_add_transaction_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="432" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_BookkeepingAddTransactionFragment_to_BookkeepingHistoryFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="nav_dashboard_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -17,46 +50,16 @@
                             <option name="y" value="12" />
                           </Point>
                         </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_BookkeepingAddTransactionFragment_to_BookkeepingHistoryFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="DashboardFragment">
+                  <entry key="nav_history_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="8" />
-                            <option name="y" value="-397" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_BookkeepingAddTransactionFragment_to_BookkeepingHistoryFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="HistoryFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="249" />
-                            <option name="y" value="12" />
+                            <option name="x" value="292" />
+                            <option name="y" value="432" />
                           </Point>
                         </option>
                         <option name="myPositions">

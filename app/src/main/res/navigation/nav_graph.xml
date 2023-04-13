@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/nav_history_fragment">
+    app:startDestination="@id/nav_dashboard_fragment">
 
     <fragment
         android:id="@+id/nav_history_fragment"
@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_history">
 
         <action
-            android:id="@+id/action_HistoryFragment_to_AddTransactionFragment"
+            android:id="@+id/action_nav_history_fragment_to_nav_add_transaction_fragment"
             app:destination="@id/nav_add_transaction_fragment" />
     </fragment>
     <fragment
@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_add_transaction">
 
         <action
-            android:id="@+id/action_BookkeepingAddTransactionFragment_to_BookkeepingHistoryFragment"
+            android:id="@+id/action_nav_add_transaction_fragment_to_nav_history_fragment"
             app:destination="@id/nav_history_fragment" />
     </fragment>
     <fragment
@@ -30,6 +30,18 @@
         android:name="com.example.aramoolah.ui.fragment.dashboard.DashboardFragment"
         android:label="@string/dashboard_fragment_label"
         tools:layout="@layout/fragment_dashboard">
+        <action
+            android:id="@+id/action_nav_dashboard_fragment_to_nav_add_wallet_fragment"
+            app:destination="@id/nav_add_wallet_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_add_wallet_fragment"
+        android:name="com.example.aramoolah.ui.fragment.addwallet.AddWalletFragment"
+        android:label="@string/add_wallet_fragment_label"
+        tools:layout="@layout/fragment_add_wallet" >
+        <action
+            android:id="@+id/action_nav_add_wallet_fragment_to_nav_dashboard_fragment"
+            app:destination="@id/nav_dashboard_fragment" />
     </fragment>
 
 </navigation>
