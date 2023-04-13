@@ -21,10 +21,8 @@ import com.example.aramoolah.data.repository.UserRepository;
 import com.example.aramoolah.data.repository.WalletRepository;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class PersonalFinanceViewModel extends AndroidViewModel {
     public User currentUser;
@@ -231,9 +229,10 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
 
     // Wallet
     public void addWallet(Wallet wallet){
-
         new Thread(() -> walletRepository.addWallet(wallet)).start();
     }
+
+    public void addWallet(String walletName, Long initialAmount){}
 
     public int getWalletId(String walletName) throws InterruptedException {
         class Foo implements Runnable {

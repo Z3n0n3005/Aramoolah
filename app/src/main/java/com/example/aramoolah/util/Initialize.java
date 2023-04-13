@@ -1,6 +1,5 @@
 package com.example.aramoolah.util;
 
-import com.example.aramoolah.data.database.PersonalFinanceDatabase;
 import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.ItemCategory;
 import com.example.aramoolah.data.model.Transaction;
@@ -9,7 +8,6 @@ import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.databinding.FragmentAddTransactionBinding;
 import com.example.aramoolah.viewmodel.AddTransactionViewModel;
-import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
 
 import org.javamoney.moneta.Money;
 

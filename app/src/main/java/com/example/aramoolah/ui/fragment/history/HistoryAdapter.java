@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,8 +45,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.RowViewH
         //TODO: Color coding TransactionType -> (+): Green, (-): Red
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 //        rowBinding = LayoutBookkeepingHistoryRowBinding.inflate(inflater, parent, false);
-        Integer viewT = viewType;
-        Log.d("ViewType", viewT.toString());
+        int viewT = viewType;
+        Log.d("ViewType", Integer.toString(viewT));
 
         View view = inflater.inflate(R.layout.layout_recycler_history_row, parent, false);
         return new RowViewHolder(view);
@@ -120,7 +119,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.RowViewH
         notifyDataSetChanged();
     }
 
-    public class RowViewHolder extends RecyclerView.ViewHolder {
+    public static class RowViewHolder extends RecyclerView.ViewHolder {
         TextView transactionType_txt, money_txt, itemCategory_txt, wallet_txt, time_txt;
 
         public RowViewHolder(@NonNull View view){

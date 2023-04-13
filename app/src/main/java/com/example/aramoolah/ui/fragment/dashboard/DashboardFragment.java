@@ -1,6 +1,9 @@
 package com.example.aramoolah.ui.fragment.dashboard;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,15 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.aramoolah.data.model.Wallet;
-import com.example.aramoolah.databinding.FragmentDashboardBinding;
-
-
-import com.example.aramoolah.R;
 import com.example.aramoolah.viewmodel.DashboardViewModel;
 
 import java.util.List;
@@ -30,7 +25,7 @@ public class DashboardFragment extends Fragment {
     DashboardAdapter dashboardAdapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         return binding.getRoot();

@@ -19,7 +19,6 @@ import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.databinding.FragmentHistoryBinding;
 import com.example.aramoolah.viewmodel.HistoryViewModel;
-import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class HistoryFragment extends Fragment {
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
         binding = FragmentHistoryBinding.inflate(inflater, container, false);
