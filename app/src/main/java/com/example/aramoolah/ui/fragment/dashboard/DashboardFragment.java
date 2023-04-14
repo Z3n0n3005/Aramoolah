@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aramoolah.data.model.Wallet;
+import com.example.aramoolah.databinding.FragmentDashboardBinding;
 import com.example.aramoolah.viewmodel.DashboardViewModel;
 
 import java.util.List;

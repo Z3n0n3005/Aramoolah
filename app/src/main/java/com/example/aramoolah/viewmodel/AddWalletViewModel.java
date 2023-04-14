@@ -4,6 +4,8 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.example.aramoolah.data.model.Wallet;
+
 import org.javamoney.moneta.Money;
 
 import java.math.BigInteger;

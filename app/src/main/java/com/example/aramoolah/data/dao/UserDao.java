@@ -25,7 +25,7 @@ public interface UserDao {
     void deleteUser(User user);
 
     @Query("SELECT * FROM user_table ORDER BY userId")
-    LiveData<List<User>> getAllUser();
+    List<User> getAllUser();
 
     @Query("SELECT userId FROM user_table WHERE email = :email")
     int getUserId(String email);

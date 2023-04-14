@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.TransactionType;
+import com.example.aramoolah.data.model.Wallet;
 
 import org.javamoney.moneta.Money;
 

@@ -30,4 +30,6 @@
     <string name="add_wallet_fragment_initial_value_hint">Initial value</string>
     <string name="add_transaction_fragment_cost_hint">Cost</string>
     <string name="add_wallet_fragment_account_name_hint">Wallet name</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

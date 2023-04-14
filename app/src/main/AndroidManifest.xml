@@ -12,10 +12,7 @@
         android:theme="@style/Theme.Aramoolah"
         tools:targetApi="31">
         <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.PersonalFinanceActivity"
+            android:name=".ui.activity.LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.Aramoolah.NoActionBar">
             <intent-filter>
@@ -23,6 +20,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activity.PersonalFinanceActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Aramoolah.NoActionBar">
+
         </activity>
     </application>
 

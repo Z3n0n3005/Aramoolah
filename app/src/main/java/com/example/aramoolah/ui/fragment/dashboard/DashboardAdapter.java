@@ -53,7 +53,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             WalletTitleViewHolder wHolder = (WalletTitleViewHolder) holder;
         } else if(holder instanceof WalletInfoViewHolder){
             Wallet wallet = walletList.get(position-1);
-            ((WalletInfoViewHolder) holder).bindWalletInfoView(wallet);
+            ((WalletInfoViewHolder) holder).bindWalletInfoViewHolder(wallet);
         } else if(holder instanceof WalletAddViewHolder){
             WalletAddViewHolder wHolder = (WalletAddViewHolder) holder;
         }
@@ -100,7 +100,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             walletInfo_btn = itemView.findViewById(R.id.dashboard_wallet_info_btn);
         }
 
-        public void bindWalletInfoView(Wallet wallet){
+        public void bindWalletInfoViewHolder(Wallet wallet){
             String btnText = wallet.walletName + " " + wallet.totalAmount.toString();
             walletInfo_btn.setText(btnText);
         }

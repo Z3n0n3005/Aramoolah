@@ -41,22 +41,22 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         super(application);
 
         //User
-        UserDao userDao = PersonalFinanceDatabase.getTransactionDatabase(application).userDao();
+        UserDao userDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).userDao();
         userRepository = new UserRepository(userDao);
         setCurrentUser("John@gmail.com");
 
         // Transaction
-        TransactionDao transactionDao = PersonalFinanceDatabase.getTransactionDatabase(application).transactionDao();
+        TransactionDao transactionDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).transactionDao();
         transactionRepository = new TransactionRepository(transactionDao);
         currentUserTransactionList = this.getCurrentUserTransactionList();
 
         // Item
-        ItemDao itemDao = PersonalFinanceDatabase.getTransactionDatabase(application).itemDao();
+        ItemDao itemDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).itemDao();
         itemRepository = new ItemRepository(itemDao);
-        currentUserItemList = this.getCurrentUserItemList();
+        currentUserItemList  = this.getCurrentUserItemList();
 
         //Wallet
-        WalletDao walletDao = PersonalFinanceDatabase.getTransactionDatabase(application).walletDao();
+        WalletDao walletDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).walletDao();
         walletRepository = new WalletRepository(walletDao);
         currentUserWalletList = this.getCurrentUserWalletList();
     }

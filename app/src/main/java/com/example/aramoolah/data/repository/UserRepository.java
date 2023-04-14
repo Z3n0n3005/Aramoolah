@@ -22,7 +22,7 @@ public class UserRepository {
     public void deleteUser(User user){
         userDao.deleteUser(user);
     }
-    public LiveData<List<User>> getAllUser(){
+    public List<User> getAllUser(){
         return userDao.getAllUser();
     }
     public int getUserId(String email){return userDao.getUserId(email);}

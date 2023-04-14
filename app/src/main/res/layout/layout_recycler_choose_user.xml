@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.activity.LoginActivity">
+    android:layout_height="wrap_content">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/login_fragment_container_view"
-        android:name="com.example.aramoolah.ui.fragment.chooseuser.ChooseUserFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <Button
+        android:id="@+id/choose_user_choose_user_btn"
+        android:layout_width="256sp"
+        android:layout_height="64sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="User"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/login_nav_graph"/>
+        app:layout_constraintVertical_bias="0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

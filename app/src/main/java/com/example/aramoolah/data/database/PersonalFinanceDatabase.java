@@ -26,7 +26,7 @@ public abstract class PersonalFinanceDatabase extends RoomDatabase {
     public abstract ItemDao itemDao();
     public abstract UserDao userDao();
 
-    public static PersonalFinanceDatabase getTransactionDatabase(Context context){
+    public static PersonalFinanceDatabase getPersonalFinanceDatabase(Context context){
         if(personalFinanceDatabase == null){
             personalFinanceDatabase = Room.databaseBuilder(
                     context,

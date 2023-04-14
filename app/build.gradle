@@ -61,4 +61,6 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
     implementation 'org.javamoney:moneta:1.0'
+
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 }
