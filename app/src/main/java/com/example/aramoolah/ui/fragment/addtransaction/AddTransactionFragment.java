@@ -109,10 +109,6 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
         }
         walletSp.setAdapter(getAdapter(walletList));
 
-        // If want preselected first item
-//        walletSp.setAdapter(walletNamesAdapter);
-//        walletSp.setOnItemSelectedListener(this);
-//        walletSp.setPrompt("Select a wallet");
     }
 
     private void setUpTransactionTypeSpinner(){

@@ -12,6 +12,9 @@
         android:theme="@style/Theme.Aramoolah"
         tools:targetApi="31">
         <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.PersonalFinanceActivity"
             android:exported="true"
             android:theme="@style/Theme.Aramoolah.NoActionBar">
