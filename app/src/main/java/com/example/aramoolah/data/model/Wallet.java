@@ -12,7 +12,7 @@ import org.javamoney.moneta.Money;
 
 @Entity(tableName = "wallet_table",
     indices = {
-        @Index(value = {"walletName"}, unique = true),
+        @Index(value = {"walletName"}),
         @Index(value = {"userId"})
     },
     foreignKeys = {

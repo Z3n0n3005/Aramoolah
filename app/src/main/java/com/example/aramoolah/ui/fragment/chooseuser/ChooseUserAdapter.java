@@ -1,5 +1,8 @@
 package com.example.aramoolah.ui.fragment.chooseuser;
 
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.User;
+import com.example.aramoolah.viewmodel.LoginViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +24,14 @@ public class ChooseUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private static final int CHOOSE_USER = 0;
     private static final int ADD_USER = 1;
 
+    private static LoginViewModel mLoginViewModel;
     private List<User> userList;
     Integer userListSize = 0;
+    private static User currentUser;
 
-    public ChooseUserAdapter(){
+    public ChooseUserAdapter(LoginViewModel mLoginViewModel){
         this.userList = new ArrayList<>();
+        ChooseUserAdapter.mLoginViewModel = mLoginViewModel;
     }
 
     @NonNull
@@ -60,10 +67,10 @@ public class ChooseUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        if(position == userListSize){
-            return ADD_USER;
-        } else {
+        if(position < userListSize){
             return CHOOSE_USER;
+        } else {
+            return ADD_USER;
         }
 //        return super.getItemViewType(position);
     }
@@ -71,19 +78,29 @@ public class ChooseUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void updateUserList(List<User> userList){
         this.userList.clear();
         this.userList = userList;
-        userListSize = userList.size();
+        this.userListSize = userList.size();
         notifyDataSetChanged();
     }
 
     public static class ChooseUserViewHolder extends RecyclerView.ViewHolder{
         Button chooseUser_btn;
+        Context context;
         public ChooseUserViewHolder(@NonNull View itemView) {
             super(itemView);
             chooseUser_btn = itemView.findViewById(R.id.choose_user_choose_user_btn);
+            context = itemView.getContext();
         }
 
         public void bindChooseUserViewHolder(User user){
             chooseUser_btn.setText(user.firstName);
+            chooseUser_btn.setOnClickListener(view -> {
+                SharedPreferences login = context.getSharedPreferences("login", Context.MODE_PRIVATE);
+                SharedPreferences.Editor loginEditor = login.edit();
+                loginEditor.putString("userName", user.firstName);
+                loginEditor.putInt("userId", user.userId);
+                loginEditor.apply();
+                Navigation.findNavController(view).navigate(R.id.action_nav_choose_user_fragment_to_nav_pin_fragment);
+            });
         }
     }
 
@@ -94,12 +111,7 @@ public class ChooseUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public AddUserViewHolder(@NonNull View itemView) {
             super(itemView);
             addUser_btn = itemView.findViewById(R.id.choose_user_add_user_btn);
-            addUser_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Navigation.findNavController(view).navigate(R.id.action_nav_choose_user_fragment_to_nav_add_user_fragment);
-                }
-            });
+            addUser_btn.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.action_nav_choose_user_fragment_to_nav_add_user_fragment));
         }
     }
 }

@@ -9,6 +9,7 @@ import com.example.aramoolah.data.model.Transaction;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -33,17 +34,26 @@ public class HistoryViewModel extends PersonalFinanceViewModel{
                     Map<String, BigInteger> hashMapMonthToMoney = new HashMap<>();
 
                     // Add entries into hashmap mapMonthToMoney
-                    for (Transaction transaction : Objects.requireNonNull(currentUserTransactionList.getValue())) {
-                        String currentMonth = transaction.localDateTime.getMonth().toString();
-                        BigInteger currentAmountOfMoney = transaction.amountOfMoney.getNumberStripped().toBigInteger();
+                    List<Transaction> transactionList = null;
+                    try {
+                        transactionList = getCurrentUserTransactionList().getValue();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
 
-                        if (currentMonth.equals("") || currentMonth.equals(prevMonth)) {
-                            currentSum = currentSum.add(currentAmountOfMoney);
-                        } else {
-                            hashMapMonthToMoney.put(prevMonth, currentSum);
-                            currentSum = currentAmountOfMoney;
+                    if(transactionList != null) {
+                        for (Transaction transaction : transactionList) {
+                            String currentMonth = transaction.localDateTime.getMonth().toString();
+                            BigInteger currentAmountOfMoney = transaction.amountOfMoney.getNumberStripped().toBigInteger();
+
+                            if (currentMonth.equals("") || currentMonth.equals(prevMonth)) {
+                                currentSum = currentSum.add(currentAmountOfMoney);
+                            } else {
+                                hashMapMonthToMoney.put(prevMonth, currentSum);
+                                currentSum = currentAmountOfMoney;
+                            }
+                            prevMonth = currentMonth;
                         }
-                        prevMonth = currentMonth;
                     }
 
                     result = new MutableLiveData<>(hashMapMonthToMoney);

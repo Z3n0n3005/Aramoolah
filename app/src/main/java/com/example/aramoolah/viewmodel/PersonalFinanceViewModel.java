@@ -1,6 +1,8 @@
 package com.example.aramoolah.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -43,7 +45,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         //User
         UserDao userDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).userDao();
         userRepository = new UserRepository(userDao);
-        setCurrentUser("John@gmail.com");
+//        setCurrentUser("John@gmail.com");
 
         // Transaction
         TransactionDao transactionDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).transactionDao();
@@ -306,6 +308,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
     }
 
     // User
+    // TODO: Remove add user
     public void addUser(User user){
         new Thread(() -> userRepository.addUser(user)).start();
     }
@@ -347,7 +350,30 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         return foo.getResult();
     }
 
+    public User getUser(Integer userId) throws InterruptedException {
+        class Foo implements Runnable {
+            private volatile User result;
+            @Override
+            public void run() {
+                result = userRepository.getUser(userId);
+            }
+
+            public User getResult() {
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
     public void setCurrentUser(String email) throws InterruptedException {
         this.currentUser = getUser(email);
+    }
+
+    public void setCurrentUser(Integer userId) throws InterruptedException {
+        this.currentUser = getUser(userId);
     }
 }

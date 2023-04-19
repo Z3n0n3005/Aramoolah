@@ -273,7 +273,5 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
                 && (itemId != null)
                 && (transactionType != null);
     }
-    public void initializeDatabase() throws InterruptedException {
-        new Initialize(mAddTransactionViewModel, binding);
-    }
+
 }

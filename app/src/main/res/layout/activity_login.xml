@@ -8,7 +8,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/login_fragment_container_view"
-        android:name="com.example.aramoolah.ui.fragment.chooseuser.ChooseUserFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -16,5 +16,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+
+        app:defaultNavHost="true"
         app:navGraph="@navigation/login_nav_graph"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

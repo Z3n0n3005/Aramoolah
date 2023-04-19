@@ -1,5 +1,7 @@
 package com.example.aramoolah.ui.fragment.dashboard;
 
+import static android.content.Intent.getIntent;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,16 @@ public class DashboardFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mDashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
 
+        //Get current userid from intent -> Set current user
+        Bundle extras = getActivity().getIntent().getExtras();
+        if (extras != null) {
+            int userId = extras.getInt("userId");
+            try {
+                mDashboardViewModel.setCurrentUser(userId);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
         dashboardRecycler = binding.dashboardRecycler;
         dashboardAdapter = new DashboardAdapter();
         dashboardRecycler.setAdapter(dashboardAdapter);

@@ -13,14 +13,26 @@
         <action
             android:id="@+id/action_nav_choose_user_fragment_to_nav_add_user_fragment"
             app:destination="@id/nav_add_user_fragment" />
+        <action
+            android:id="@+id/action_nav_choose_user_fragment_to_nav_pin_fragment"
+            app:destination="@id/nav_pin_fragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_add_user_fragment"
-        android:name="com.example.aramoolah.ui.fragment.adduser.AddUser"
+        android:name="com.example.aramoolah.ui.fragment.adduser.AddUserFragment"
         android:label="fragment_add_user"
         tools:layout="@layout/fragment_add_user" >
         <action
             android:id="@+id/action_nav_add_user_fragment_to_nav_choose_user_fragment"
+            app:destination="@id/nav_choose_user_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_pin_fragment"
+        android:name="com.example.aramoolah.ui.fragment.pin.PinFragment"
+        android:label="fragment_pin"
+        tools:layout="@layout/fragment_pin" >
+        <action
+            android:id="@+id/action_nav_pin_fragment_to_nav_choose_user_fragment"
             app:destination="@id/nav_choose_user_fragment" />
     </fragment>
 </navigation>

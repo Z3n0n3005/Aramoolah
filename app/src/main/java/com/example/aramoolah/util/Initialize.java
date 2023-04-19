@@ -1,5 +1,7 @@
 package com.example.aramoolah.util;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.ItemCategory;
 import com.example.aramoolah.data.model.Transaction;
@@ -8,10 +10,13 @@ import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.databinding.FragmentAddTransactionBinding;
 import com.example.aramoolah.viewmodel.AddTransactionViewModel;
+import com.example.aramoolah.viewmodel.LoginViewModel;
 
 import org.javamoney.moneta.Money;
 
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 
 import javax.money.CurrencyUnit;
@@ -19,10 +24,12 @@ import javax.money.Monetary;
 
 public class Initialize {
     AddTransactionViewModel mAddTransactionViewModel;
-    FragmentAddTransactionBinding binding;
-    public Initialize(AddTransactionViewModel mAddTransactionViewModel, FragmentAddTransactionBinding binding) throws InterruptedException {
+    LoginViewModel mLoginViewModel;
+//    FragmentAddTransactionBinding binding;
+    public Initialize(AddTransactionViewModel mAddTransactionViewModel, LoginViewModel mLoginViewModel) throws InterruptedException, NoSuchAlgorithmException, InvalidKeySpecException {
         this.mAddTransactionViewModel = mAddTransactionViewModel;
-        this.binding = binding;
+        this.mLoginViewModel = mLoginViewModel;
+//        this.binding = binding;
         addUser();
         addWallet();
         addItem();
@@ -30,8 +37,8 @@ public class Initialize {
         mAddTransactionViewModel.setCurrentUser("John@gmail.com");
     }
 
-    public void addUser(){
-        User user = new User("John","John","John","John@gmail.com","12345");
+    public void addUser() throws NoSuchAlgorithmException, InvalidKeySpecException, InterruptedException {
+        User user = new User("John","John","John","John@gmail.com", mLoginViewModel.PBKDFHash("12345"));
         mAddTransactionViewModel.addUser(user);
     }
     //
