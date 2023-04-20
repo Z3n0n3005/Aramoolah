@@ -1,5 +1,7 @@
 package com.example.aramoolah.ui.fragment.addwallet;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.aramoolah.R;
+import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.databinding.FragmentAddWalletBinding;
 import com.example.aramoolah.viewmodel.AddWalletViewModel;
 
@@ -38,6 +41,16 @@ public class AddWalletFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mAddWalletViewModel = new ViewModelProvider(this).get(AddWalletViewModel.class);
+
+        // Set current user
+        Session session = new Session(requireContext());
+        int userId = session.getUserId();
+
+        try {
+            mAddWalletViewModel.setCurrentUser(userId);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         binding.addWalletSubmitBtn.setOnClickListener(view1 -> {
             addWallet();

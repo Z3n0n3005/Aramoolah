@@ -18,7 +18,6 @@ public class HistoryViewModel extends PersonalFinanceViewModel{
 
     public HistoryViewModel(@NonNull Application application) throws InterruptedException {
         super(application);
-        mapMonthToMoney = getMapMonthToMoney();
 
     }
 

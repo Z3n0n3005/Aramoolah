@@ -1,5 +1,7 @@
 package com.example.aramoolah.ui.fragment.history;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
+import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.databinding.FragmentHistoryBinding;
@@ -43,6 +46,15 @@ public class HistoryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mHistoryViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+
+        Session session = new Session(requireContext());
+        int userId = session.getUserId();
+
+        try {
+            mHistoryViewModel.setCurrentUser(userId);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         historyAdapter = new HistoryAdapter();
         history_recycler = binding.historyRecycler;

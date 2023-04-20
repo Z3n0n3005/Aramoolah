@@ -1,5 +1,7 @@
 package com.example.aramoolah.ui.fragment.addtransaction;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import androidx.navigation.Navigation;
 import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.databinding.FragmentAddTransactionBinding;
 import com.example.aramoolah.data.model.TransactionType;
@@ -58,6 +61,17 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
 
         // PersonalFinanceViewModel
         mAddTransactionViewModel = new ViewModelProvider(this).get(AddTransactionViewModel.class);
+
+        // Set current user
+        Session session = new Session(requireContext());
+        int userId = session.getUserId();
+
+        try {
+            mAddTransactionViewModel.setCurrentUser(userId);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         try {
             // Run Once
 //            initializeDatabase();

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.aramoolah.R;
+import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.databinding.FragmentPinBinding;
 import com.example.aramoolah.ui.activity.PersonalFinanceActivity;
@@ -43,7 +44,6 @@ import javax.xml.transform.Result;
 public class PinFragment extends Fragment {
     FragmentPinBinding binding;
     LoginViewModel mLoginViewModel;
-    PersonalFinanceViewModel mPersonalFinanceViewModel;
     EditText pinPassword_et;
     Button pinLogin_btn;
     TextView userName_txt;
@@ -59,7 +59,6 @@ public class PinFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        mPersonalFinanceViewModel = new ViewModelProvider(this).get(PersonalFinanceViewModel.class);
         pinLogin_btn = binding.pinLoginBtn;
         pinPassword_et = binding.pinPasswordEt;
         userName_txt = binding.pinUserNameTxt;
@@ -90,32 +89,39 @@ public class PinFragment extends Fragment {
 
         // On login check if password is correct
         pinLogin_btn.setOnClickListener(view1 -> {
-            if(pinPassword_et.getText() != null){
-
-                try {
-                    if(mLoginViewModel.isCorrectPassword(userId, pinPassword_et.getText().toString())){
-                        // If correct -> set the current user in PersonalFinanceViewModel -> start the main activity
-                        mPersonalFinanceViewModel.setCurrentUser(userId);
-                        getActivity().setResult(Activity.RESULT_OK);
-                        Intent intent = new Intent(getContext(), PersonalFinanceActivity.class);
-                        intent.putExtra("userId", userId);
-                        startActivity(intent);
-                        getActivity().finish();
-                    } else {
-                        // Else -> get bonked
-                        Toast.makeText(getContext(), "Incorrect password.", Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                Toast.makeText(getContext(), "Pin cannot be empty.", Toast.LENGTH_SHORT).show();
-            }
-
+            login(userId);
         });
 
     }
 
+    private void login(int userId){
+        if(pinPassword_et.getText() != null){
+
+            try {
+                if(mLoginViewModel.isCorrectPassword(userId, pinPassword_et.getText().toString())){
+                    // If correct -> set the current user in PersonalFinanceViewModel -> start the main activity
+                    getActivity().setResult(Activity.RESULT_OK);
+
+                    // Set session
+                    Session session = new Session(requireContext());
+                    session.setUserId(userId);
+
+                    //Start new activity
+                    Intent intent = new Intent(getContext(), PersonalFinanceActivity.class);
+                    startActivity(intent);
+
+                    getActivity().finish();
+                } else {
+                    // Else -> get bonked
+                    Toast.makeText(getContext(), "Incorrect password.", Toast.LENGTH_SHORT).show();
+                }
+
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            Toast.makeText(getContext(), "Pin cannot be empty.", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 }

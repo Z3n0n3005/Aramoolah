@@ -2,6 +2,8 @@ package com.example.aramoolah.ui.fragment.dashboard;
 
 import static android.content.Intent.getIntent;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.aramoolah.R;
+import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.databinding.FragmentDashboardBinding;
 import com.example.aramoolah.viewmodel.DashboardViewModel;
@@ -39,16 +43,16 @@ public class DashboardFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mDashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
 
-        //Get current userid from intent -> Set current user
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null) {
-            int userId = extras.getInt("userId");
-            try {
-                mDashboardViewModel.setCurrentUser(userId);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        //Get current userid from shared -> Set current user
+        Session session = new Session(requireContext());
+        int userId = session.getUserId();
+
+        try {
+            mDashboardViewModel.setCurrentUser(userId);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+
         dashboardRecycler = binding.dashboardRecycler;
         dashboardAdapter = new DashboardAdapter();
         dashboardRecycler.setAdapter(dashboardAdapter);
