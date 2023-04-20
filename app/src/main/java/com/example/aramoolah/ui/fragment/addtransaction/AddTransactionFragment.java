@@ -1,5 +1,7 @@
 package com.example.aramoolah.ui.fragment.addtransaction;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import androidx.navigation.Navigation;
 import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.databinding.FragmentAddTransactionBinding;
 import com.example.aramoolah.data.model.TransactionType;
@@ -44,7 +47,7 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
 
@@ -58,6 +61,17 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
 
         // PersonalFinanceViewModel
         mAddTransactionViewModel = new ViewModelProvider(this).get(AddTransactionViewModel.class);
+
+        // Set current user
+        Session session = new Session(requireContext());
+        int userId = session.getUserId();
+
+        try {
+            mAddTransactionViewModel.setCurrentUser(userId);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         try {
             // Run Once
 //            initializeDatabase();
@@ -78,14 +92,11 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
         //TODO: Find a view that can type and quick search (low priority)
 
         // Submit button
-        binding.submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    addTransaction();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+        binding.addTransactionSubmitBtn.setOnClickListener(view1 -> {
+            try {
+                addTransaction();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         });
     }
@@ -103,7 +114,7 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
     public void onNothingSelected(AdapterView<?> adapterView) {}
 
     private void setUpWalletSpinner(){
-        Spinner walletSp = binding.walletSp;
+        Spinner walletSp = binding.addTransactionWalletSp;
         List<Wallet> walletList;
         try {
             walletList = mAddTransactionViewModel.getCurrentUserWalletList().getValue();
@@ -112,14 +123,10 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
         }
         walletSp.setAdapter(getAdapter(walletList));
 
-        // If want preselected first item
-//        walletSp.setAdapter(walletNamesAdapter);
-//        walletSp.setOnItemSelectedListener(this);
-//        walletSp.setPrompt("Select a wallet");
     }
 
     private void setUpTransactionTypeSpinner(){
-        Spinner transactionTypeSp = binding.transactionTypeSp;
+        Spinner transactionTypeSp = binding.addTransactionTypeSp;
         ArrayAdapter<CharSequence> transactionTypeAdapter = ArrayAdapter.createFromResource(
                 getActivity(),
                 R.array.transaction_type,
@@ -130,8 +137,8 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
     }
 
     private void setUpItemCategorySpinner(List<ItemCategory> categoryList) throws InterruptedException {
-        Spinner itemNameSp = binding.itemNameSp;
-        Spinner categorySp = binding.categorySp;
+        Spinner itemNameSp = binding.addTransactionItemNameSp;
+        Spinner categorySp = binding.addTransactionCategorySp;
         categorySp.setAdapter(getAdapter(categoryList));
 
         // TODO test if auto fill category works
@@ -173,8 +180,8 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
     }
 
     private void setUpItemNameSpinner(List<Item> itemList, List<ItemCategory> categoryList) throws InterruptedException {
-        Spinner itemNameSp = binding.itemNameSp;
-        Spinner categorySp = binding.categorySp;
+        Spinner itemNameSp = binding.addTransactionItemNameSp;
+        Spinner categorySp = binding.addTransactionCategorySp;
         itemNameSp.setAdapter(getAdapter(itemList));
 
         itemNameSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -235,7 +242,7 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
             mAddTransactionViewModel.addTransaction(transaction, costInt);
             Toast.makeText(requireContext(), "Successfully added transaction", Toast.LENGTH_SHORT).show();
             //Navigate to bookeeping history fragment afterward
-            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_BookkeepingAddTransactionFragment_to_BookkeepingHistoryFragment);
+            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_add_transaction_fragment_to_nav_history_fragment);
         } else {
             Toast.makeText(requireContext(), "Please fill out all fields.", Toast.LENGTH_SHORT).show();
         }
@@ -244,29 +251,28 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
     private Money createCost(){
         CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
         BigInteger amountOfMoneyInt = createCostInt();
-        Money amountOfMoney = Money.of(amountOfMoneyInt, currencyUnit);
-        return amountOfMoney;
+        return Money.of(amountOfMoneyInt, currencyUnit);
     }
 
     private BigInteger createCostInt(){
-        return BigInteger.valueOf(Integer.parseInt(binding.costEt.getText().toString()));
+        return BigInteger.valueOf(Integer.parseInt(binding.addTransactionCostEt.getText().toString()));
     }
 
     private Integer createNumberOfItem(){
-        return Integer.parseInt(binding.numberOfItemsEt.getText().toString());
+        return Integer.parseInt(binding.addTransactionCostEt.getText().toString());
     }
 
     private Integer createWalletId() throws InterruptedException {
-        return mAddTransactionViewModel.getWalletId(binding.walletSp.getSelectedItem().toString());
+        return mAddTransactionViewModel.getWalletId(binding.addTransactionWalletSp.getSelectedItem().toString());
     }
 
     private Integer createItemId() throws InterruptedException {
-        Integer itemId = mAddTransactionViewModel.getItemId(binding.itemNameSp.getSelectedItem().toString());
+        Integer itemId = mAddTransactionViewModel.getItemId(binding.addTransactionItemNameSp.getSelectedItem().toString());
         return itemId;
     }
 
     private TransactionType createTransactionType(){
-        String transactionTypeStr = binding.transactionTypeSp.getSelectedItem().toString();
+        String transactionTypeStr = binding.addTransactionTypeSp.getSelectedItem().toString();
 
         if(transactionTypeStr.equals("+")){
             return TransactionType.INCOME;
@@ -281,7 +287,5 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
                 && (itemId != null)
                 && (transactionType != null);
     }
-    public void initializeDatabase() throws InterruptedException {
-        new Initialize(mAddTransactionViewModel, binding);
-    }
+
 }

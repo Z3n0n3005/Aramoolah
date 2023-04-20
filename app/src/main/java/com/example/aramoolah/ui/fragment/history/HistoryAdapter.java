@@ -1,5 +1,6 @@
 package com.example.aramoolah.ui.fragment.history;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.RowAdapter> {
+public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.RowViewHolder> {
 //    private LayoutBookkeepingHistoryRowBinding rowBinding;
     private List<Transaction> transactionList;
     private List<Item> itemList;
@@ -39,20 +40,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.RowAdapt
 
     @NonNull
     @Override
-    public HistoryAdapter.RowAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HistoryAdapter.RowViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //TODO: Create HistoryAdapter
         //TODO: Color coding TransactionType -> (+): Green, (-): Red
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 //        rowBinding = LayoutBookkeepingHistoryRowBinding.inflate(inflater, parent, false);
-
+        int viewT = viewType;
+        Log.d("ViewType", Integer.toString(viewT));
 
         View view = inflater.inflate(R.layout.layout_recycler_history_row, parent, false);
-        return new RowAdapter(view);
+        return new RowViewHolder(view);
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HistoryAdapter.RowAdapter holder, int position) {
+    public void onBindViewHolder(@NonNull HistoryAdapter.RowViewHolder holder, int position) {
         Transaction transaction = transactionList.get(position);
         if(transaction.transactionType.equals(TransactionType.EXPENSE)){
             holder.transactionType_txt.setText("-");
@@ -117,10 +119,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.RowAdapt
         notifyDataSetChanged();
     }
 
-    public class RowAdapter extends RecyclerView.ViewHolder {
+    public static class RowViewHolder extends RecyclerView.ViewHolder {
         TextView transactionType_txt, money_txt, itemCategory_txt, wallet_txt, time_txt;
 
-        public RowAdapter(@NonNull View view){
+        public RowViewHolder(@NonNull View view){
             super(view);
             this.transactionType_txt = view.findViewById(R.id.history_transaction_type_txt);
             this.money_txt = view.findViewById(R.id.history_money_txt);

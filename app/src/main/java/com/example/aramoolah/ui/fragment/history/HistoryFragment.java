@@ -1,5 +1,7 @@
 package com.example.aramoolah.ui.fragment.history;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
+import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.databinding.FragmentHistoryBinding;
 import com.example.aramoolah.viewmodel.HistoryViewModel;
-import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
 
 import java.util.List;
 
@@ -28,11 +30,11 @@ public class HistoryFragment extends Fragment {
     private FragmentHistoryBinding binding;
     private HistoryViewModel mHistoryViewModel;
     private RecyclerView history_recycler;
-    private HistoryAdapter rowAdapter;
+    private HistoryAdapter historyAdapter;
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
         binding = FragmentHistoryBinding.inflate(inflater, container, false);
@@ -45,9 +47,18 @@ public class HistoryFragment extends Fragment {
 
         mHistoryViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
 
-        rowAdapter = new HistoryAdapter();
+        Session session = new Session(requireContext());
+        int userId = session.getUserId();
+
+        try {
+            mHistoryViewModel.setCurrentUser(userId);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        historyAdapter = new HistoryAdapter();
         history_recycler = binding.historyRecycler;
-        history_recycler.setAdapter(rowAdapter);
+        history_recycler.setAdapter(historyAdapter);
         history_recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         try {
             mHistoryViewModel.getCurrentUserTransactionList().observe(getViewLifecycleOwner(), transactionListObserver);
@@ -58,12 +69,7 @@ public class HistoryFragment extends Fragment {
         }
 
         // Add Transaction button navigation
-        binding.addTransactionBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_HistoryFragment_to_AddTransactionFragment);
-            }
-        });
+        binding.addTransactionBtn.setOnClickListener(view1 -> Navigation.findNavController(view1).navigate(R.id.action_nav_history_fragment_to_nav_add_transaction_fragment));
     }
 
     @Override
@@ -75,21 +81,21 @@ public class HistoryFragment extends Fragment {
     final Observer<List<Transaction>> transactionListObserver = new Observer<List<Transaction>>() {
         @Override
         public void onChanged(List<Transaction> transactions) {
-            rowAdapter.updateTransactionList(transactions);
+            historyAdapter.updateTransactionList(transactions);
         }
     };
 
     final Observer<List<Item>> itemListObserver = new Observer<List<Item>>() {
         @Override
         public void onChanged(List<Item> items) {
-            rowAdapter.updateItemList(items);
+            historyAdapter.updateItemList(items);
         }
     };
 
     final Observer<List<Wallet>> walletListObserver = new Observer<List<Wallet>>() {
         @Override
         public void onChanged(List<Wallet> wallets) {
-            rowAdapter.updateWalletList(wallets);
+            historyAdapter.updateWalletList(wallets);
         }
     };
 

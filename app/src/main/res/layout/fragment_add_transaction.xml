@@ -7,22 +7,22 @@
     tools:context=".ui.fragment.addtransaction.AddTransactionFragment">
 
     <EditText
-        android:id="@+id/cost_et"
+        android:id="@+id/add_transaction_cost_et"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="5dp"
         android:height="48dp"
-        android:hint="Cost"
+        android:hint="@string/add_transaction_fragment_cost_hint"
         android:inputType="phone"
-        app:layout_constraintEnd_toStartOf="@+id/addTransactionMultiple_txt"
-        app:layout_constraintStart_toEndOf="@+id/transactionType_sp"
+        app:layout_constraintEnd_toStartOf="@+id/add_transaction_multiple_txt"
+        app:layout_constraintStart_toEndOf="@+id/add_transaction_type_sp"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="Autofill" />
 
     <EditText
-        android:id="@+id/numberOfItems_et"
+        android:id="@+id/add_transaction_num_item_et"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="32dp"
@@ -35,26 +35,26 @@
         tools:ignore="Autofill" />
 
     <Spinner
-        android:id="@+id/wallet_sp"
+        android:id="@+id/add_transaction_wallet_sp"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:height="48dp"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cost_et"
+        app:layout_constraintTop_toBottomOf="@+id/add_transaction_cost_et"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Spinner
-        android:id="@+id/itemName_sp"
+        android:id="@+id/add_transaction_item_name_sp"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:ems="10"
         android:hint="Item"
@@ -62,45 +62,45 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/category_sp" />
+        app:layout_constraintTop_toBottomOf="@+id/add_transaction_category_sp" />
 
     <Spinner
-        android:id="@+id/category_sp"
+        android:id="@+id/add_transaction_category_sp"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:ems="10"
         android:hint="Category"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wallet_sp" />
+        app:layout_constraintTop_toBottomOf="@+id/add_transaction_wallet_sp" />
 
     <Button
-        android:id="@+id/submit_btn"
+        android:id="@+id/add_transaction_submit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemName_sp" />
+        app:layout_constraintTop_toBottomOf="@+id/add_transaction_item_name_sp" />
 
     <TextView
-        android:id="@+id/addTransactionMultiple_txt"
+        android:id="@+id/add_transaction_multiple_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
         android:text="X"
         android:textSize="25sp"
-        app:layout_constraintEnd_toStartOf="@+id/numberOfItems_et"
+        app:layout_constraintEnd_toStartOf="@+id/add_transaction_num_item_et"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/transactionType_sp"
+        android:id="@+id/add_transaction_type_sp"
         android:layout_width="30dp"
         android:layout_height="48dp"
         android:layout_marginStart="24dp"

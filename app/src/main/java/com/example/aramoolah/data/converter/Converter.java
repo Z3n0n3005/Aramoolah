@@ -58,9 +58,4 @@ public class Converter {
         return (money == null)? null : Money.parse(money);
     }
 
-//    public static void main(String[] args) {
-//        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
-//        Money money = Money.of(12, currencyUnit);
-//        System.out.println(money);
-//    }
 }

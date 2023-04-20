@@ -1,4 +1,6 @@
 <resources>
+    <string name="LOGIN_SESSION">com.example.Aramoolah.LOGIN_SESSION</string>
+
     <string name="app_name">Aramoolah</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
@@ -20,10 +22,21 @@
     <string name="nothing_selected_layout_text">"Select one …"</string>
 
 
-    // bookkeeping_fragment
+    // history_fragment
     <string name="total_amount_symbol">Σ</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_history">History</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    // add_wallet_fragment
+    <string name="add_wallet_fragment_label">Add Wallet</string>
+    <string name="add_wallet_fragment_initial_value_hint">Initial value</string>
+    <string name="add_transaction_fragment_cost_hint">Cost</string>
+    <string name="add_wallet_fragment_account_name_hint">Wallet name</string>
+
+    // add_user_fragment
+    <string name="add_user_first_name_hint">First name</string>
+    <string name="add_user_middle_name_hint">Middle name (Optional)</string>
+    <string name="add_user_last_name_hint">Last name</string>
+    <string name="add_user_email_hint">Email</string>
+    <string name="add_user_password_hint">Pin</string>
 </resources>

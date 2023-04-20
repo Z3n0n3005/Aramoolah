@@ -17,7 +17,7 @@ import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.model.Wallet;
 
-@Database(entities = {Transaction.class, Wallet.class, Item.class, User.class}, version = 8)
+@Database(entities = {Transaction.class, Wallet.class, Item.class, User.class}, version = 11)
 @TypeConverters({Converter.class})
 public abstract class PersonalFinanceDatabase extends RoomDatabase {
     public volatile static PersonalFinanceDatabase personalFinanceDatabase = null;
@@ -26,7 +26,7 @@ public abstract class PersonalFinanceDatabase extends RoomDatabase {
     public abstract ItemDao itemDao();
     public abstract UserDao userDao();
 
-    public static PersonalFinanceDatabase getTransactionDatabase(Context context){
+    public static PersonalFinanceDatabase getPersonalFinanceDatabase(Context context){
         if(personalFinanceDatabase == null){
             personalFinanceDatabase = Room.databaseBuilder(
                     context,
