@@ -22,16 +22,13 @@ public class Item{
     public Integer userId;
     @ColumnInfo(name = "itemName")
     public String itemName;
-    @ColumnInfo(name = "cost")
-    public Money cost;
     @ColumnInfo(name = "itemCategory")
     public ItemCategory itemCategory;
 
-    public Item(Integer userId, String itemName, Money cost, ItemCategory itemCategory){
+    public Item(Integer userId, String itemName, ItemCategory itemCategory){
         this.userId = userId;
         this.itemCategory = itemCategory;
         this.itemName = itemName;
-        this.cost = cost;
     }
 
     @NonNull

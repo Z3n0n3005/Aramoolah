@@ -259,7 +259,7 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
     }
 
     private Integer createNumberOfItem(){
-        return Integer.parseInt(binding.addTransactionCostEt.getText().toString());
+        return Integer.parseInt(binding.addTransactionNumItemEt.getText().toString());
     }
 
     private Integer createWalletId() throws InterruptedException {

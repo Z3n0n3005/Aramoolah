@@ -9,5 +9,6 @@ public enum ItemCategory {
     MAINTENANCE, // Vehicle, housing, equipment maintainance
     COMMUNICATION, // Software, internet, phone and postal service, PC
     INVESTMENT, // For investing in stocks or bonds, no bank saving though
+    INCOME, // Checks, coupons, Child support, Dues & grants, Gifts, Interests, dividends, Lending, renting, Lottery, gambling, Refunds (tax, purchase), Rental income, Sale, Wage, invoices
     OTHER // For everything else
 }

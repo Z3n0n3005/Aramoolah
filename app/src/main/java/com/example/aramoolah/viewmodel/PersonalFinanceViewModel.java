@@ -175,8 +175,12 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
 
     public List<Item> getItemFromItemCategory(ItemCategory itemCategory) throws InterruptedException {
         class Foo implements Runnable{
-            final List<Item> currentItemList = currentUserItemList.getValue();
+            final List<Item> currentItemList = getCurrentUserItemList().getValue();
             final List<Item> filteredItemList = new ArrayList<>();
+
+            Foo() throws InterruptedException {
+            }
+
             @Override
             public void run() {
                 assert currentItemList != null;

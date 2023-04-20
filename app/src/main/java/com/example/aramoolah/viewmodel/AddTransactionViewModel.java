@@ -1,6 +1,7 @@
 package com.example.aramoolah.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -26,17 +27,24 @@ public class AddTransactionViewModel extends PersonalFinanceViewModel{
         new Thread(() -> {
             BigInteger walletTotalAmount = BigInteger.valueOf(0);
             BigInteger updatedWalletTotalAmount = BigInteger.valueOf(0);
-            for(Wallet wallet: Objects.requireNonNull(currentUserWalletList.getValue())){
-                if(wallet.walletId.equals(transaction.walletId)){
-                    walletTotalAmount = wallet.totalAmount.getNumberStripped().toBigInteger();
-                    break;
+            try {
+                for(Wallet wallet: Objects.requireNonNull(getCurrentUserWalletList().getValue())){
+                    if(wallet.walletId.equals(transaction.walletId)){
+                        walletTotalAmount = wallet.totalAmount.getNumberStripped().toBigInteger();
+                        break;
+                    }
                 }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
 
             if(transaction.transactionType.equals(TransactionType.EXPENSE)) {
+                Log.d("Add Transaction", cost.toString() + "x" +transaction.numberOfItem);
                 updatedWalletTotalAmount = walletTotalAmount.subtract(cost.multiply(BigInteger.valueOf(transaction.numberOfItem)));
             }
             if(transaction.transactionType.equals(TransactionType.INCOME)){
+                Log.d("Add Transaction", cost.toString() + "x" +transaction.numberOfItem);
+
                 updatedWalletTotalAmount = walletTotalAmount.add(cost.multiply(BigInteger.valueOf(transaction.numberOfItem)));
             }
 

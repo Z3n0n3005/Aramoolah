@@ -26,11 +26,10 @@ public class Initialize {
     // TODO: Recreate Initialize
     AddTransactionViewModel mAddTransactionViewModel;
     LoginViewModel mLoginViewModel;
-//    FragmentAddTransactionBinding binding;
     public Initialize(AddTransactionViewModel mAddTransactionViewModel, LoginViewModel mLoginViewModel) throws InterruptedException, NoSuchAlgorithmException, InvalidKeySpecException {
         this.mAddTransactionViewModel = mAddTransactionViewModel;
         this.mLoginViewModel = mLoginViewModel;
-//        this.binding = binding;
+
         addUser();
         addWallet();
         addItem();
@@ -59,10 +58,10 @@ public class Initialize {
 //        Item item = new Item(userId, "redbull", redbull, ItemCategory.DRINK);
 //        mAddTransactionViewModel.addItem(item);
 
-        Money cake = Money.of(20000, currencyUnit);
+//        Money cake = Money.of(20000, currencyUnit);
 
-        Item item2 = new Item(userId, "cake", cake, ItemCategory.FOOD);
-        mAddTransactionViewModel.addItem(item2);
+//        Item item2 = new Item(userId, "cake", cake, ItemCategory.FOOD);
+//        mAddTransactionViewModel.addItem(item2);
     }
     public void addTempTransaction(){
         CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
