@@ -13,6 +13,7 @@ import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.data.repository.UserRepository;
 import com.example.aramoolah.data.repository.WalletRepository;
+import com.example.aramoolah.util.security.Hash;
 
 import org.javamoney.moneta.Money;
 
@@ -32,6 +33,7 @@ import javax.money.Monetary;
 public class AddUserViewModel extends AndroidViewModel {
     UserRepository userRepository;
     WalletRepository walletRepository;
+    Hash mHash;
     public AddUserViewModel(@NonNull Application application) {
         super(application);
         UserDao userDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).userDao();
@@ -39,6 +41,8 @@ public class AddUserViewModel extends AndroidViewModel {
 
         WalletDao walletDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).walletDao();
         walletRepository = new WalletRepository(walletDao);
+
+        mHash = Hash.getInstance();
     }
 
     public User getUser(String email) throws InterruptedException {
@@ -66,7 +70,7 @@ public class AddUserViewModel extends AndroidViewModel {
             public void run() {
                 String hashPass = null;
                 try {
-                    hashPass = PBKDFHash(password);
+                    hashPass = mHash.PBKDFHash(password);
                     User user = new User(firstName, middleName, lastName, email, hashPass);
                     userRepository.addUser(user);
 
@@ -82,56 +86,5 @@ public class AddUserViewModel extends AndroidViewModel {
         });
         thread.start();
         thread.join();
-    }
-
-    private String PBKDFHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException, InterruptedException {
-        class Foo implements Runnable {
-            byte[] hash;
-            byte[] salt;
-            List<Byte> result;
-            String resultStr;
-
-            @Override
-            public void run() {
-                SecureRandom random = new SecureRandom();
-                salt = new byte[16];
-                random.nextBytes(salt);
-
-                KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
-                SecretKeyFactory factory = null;
-                try {
-                    factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-                } catch (NoSuchAlgorithmException e) {
-                    throw new RuntimeException(e);
-                }
-
-                try {
-                    hash = factory.generateSecret(spec).getEncoded();
-                } catch (InvalidKeySpecException e) {
-                    throw new RuntimeException(e);
-                }
-
-                String saltStr = "";
-                for (byte s : salt) {
-                    String st = String.format("%02X", s);
-                    saltStr += st;
-                }
-                String hashStr = "";
-                for(byte h: hash){
-                    String st = String.format("%02X", h);
-                    hashStr += st;
-                }
-                resultStr = hashStr + saltStr;
-            }
-
-            public String getResult(){
-                return resultStr;
-            }
-        }
-        Foo foo = new Foo();
-        Thread thread = new Thread(foo);
-        thread.start();
-        thread.join();
-        return foo.getResult();
     }
 }

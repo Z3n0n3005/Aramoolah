@@ -11,12 +11,14 @@ import com.example.aramoolah.data.dao.UserDao;
 import com.example.aramoolah.data.database.PersonalFinanceDatabase;
 import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.repository.UserRepository;
+import com.example.aramoolah.util.security.Hash;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.List;
+import java.util.Objects;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -25,12 +27,14 @@ public class LoginViewModel extends AndroidViewModel {
     UserRepository userRepository;
     volatile MutableLiveData<List<User>> userList;
     MutableLiveData<User> currentUser;
+    Hash mHash;
     public LoginViewModel(@NonNull Application application) throws InterruptedException {
         super(application);
         UserDao userDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).userDao();
         userRepository = new UserRepository(userDao);
         userList = getUserList();
         currentUser = new MutableLiveData<>();
+        mHash = Hash.getInstance();
     }
 
     public MutableLiveData<List<User>> getUserList() throws InterruptedException {
@@ -78,98 +82,18 @@ public class LoginViewModel extends AndroidViewModel {
         return currentUser;
     }
 
-    public String PBKDFHash(String password, byte[] saltProvided) throws NoSuchAlgorithmException, InvalidKeySpecException, InterruptedException {
-        class Foo implements Runnable {
-            byte[] hash;
-            List<Byte> result;
-            String resultStr;
-            @Override
-            public void run() {
-                SecureRandom random = new SecureRandom();
-                byte[] salt = new byte[16];
-                if(saltProvided.length != 0) {
-                    salt = saltProvided;
-                } else{
-                    random.nextBytes(salt);
-                }
-
-                KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
-                SecretKeyFactory factory = null;
-                try {
-                    factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-                } catch (NoSuchAlgorithmException e) {
-                    throw new RuntimeException(e);
-                }
-
-                try {
-                    hash = factory.generateSecret(spec).getEncoded();
-                } catch (InvalidKeySpecException e) {
-                    throw new RuntimeException(e);
-                }
-
-                String saltStr = "";
-                for (byte s : salt) {
-                    String st = String.format("%02X", s);
-                    saltStr += st;
-                }
-                String hashStr = "";
-                for(byte h: hash){
-                    String st = String.format("%02X", h);
-                    hashStr += st;
-                }
-                resultStr = hashStr + saltStr;
-            }
-
-            public String getResult(){
-                return resultStr;
-            }
-        }
-        Foo foo = new Foo();
-        Thread thread = new Thread(foo);
-        thread.start();
-        thread.join();
-        return foo.getResult();
-    }
-
-    public String PBKDFHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException, InterruptedException {
-        byte[] empty = new byte[16];
-        return PBKDFHash(password, empty);
-    }
-
-    private byte[] getSaltFromPassword(String saltStrRetrieved) throws InterruptedException {
-        class Foo implements Runnable{
-            byte[] result;
-            @Override
-            public void run() {
-                result = new byte[saltStrRetrieved.length() / 2];
-                for (int i = 0; i < result.length; i++) {
-                    int index = i * 2;
-                    int j = Integer.parseInt(saltStrRetrieved.substring(index, index + 2), 16);
-                    result[i] = (byte) j;
-                }
-            }
-            public byte[] getResult(){return result;}
-        }
-        Foo foo = new Foo();
-        Thread thread = new Thread(foo);
-        thread.start();
-        thread.join();
-        return foo.getResult();
-    }
-
     public boolean isCorrectPassword(Integer userId, String passwordProvided) throws InterruptedException {
         class Foo implements Runnable{
             Boolean result = false;
             @Override
             public void run() {
-                String password = currentUser.getValue().password;
+                String password = Objects.requireNonNull(currentUser.getValue()).password;
                 int toInd = password.length();
                 int fromInd = toInd - 32;
-//                String hashStrRetrieved = password.substring(0, fromInd - 1);
                 String saltStrRetrieved = password.substring(fromInd, toInd);
                 try {
-                    byte[] retrievedSalt = getSaltFromPassword(saltStrRetrieved);
-                    String passwordProvidedHash = PBKDFHash(passwordProvided, retrievedSalt);
+                    byte[] retrievedSalt = mHash.getSaltFromPassword(saltStrRetrieved);
+                    String passwordProvidedHash = mHash.PBKDFHash(passwordProvided, retrievedSalt);
                     if(password.equals(passwordProvidedHash)){
                         result = true;
                     }

@@ -10,7 +10,6 @@ public class Session {
     private final SharedPreferences prefs;
 
     public Session(Context context) {
-        // TODO Auto-generated constructor stub
         prefs = context.getSharedPreferences("com.example.Aramoolah.LOGIN_SESSION", Context.MODE_PRIVATE);
     }
 

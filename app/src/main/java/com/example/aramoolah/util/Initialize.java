@@ -23,6 +23,7 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
 public class Initialize {
+    // TODO: Recreate Initialize
     AddTransactionViewModel mAddTransactionViewModel;
     LoginViewModel mLoginViewModel;
 //    FragmentAddTransactionBinding binding;
@@ -38,8 +39,8 @@ public class Initialize {
     }
 
     public void addUser() throws NoSuchAlgorithmException, InvalidKeySpecException, InterruptedException {
-        User user = new User("John","John","John","John@gmail.com", mLoginViewModel.PBKDFHash("12345"));
-        mAddTransactionViewModel.addUser(user);
+//        User user = new User("John","John","John","John@gmail.com", mLoginViewModel.m.PBKDFHash("12345"));
+//        mAddTransactionViewModel.addUser(user);
     }
     //
     public void addWallet() throws InterruptedException {
@@ -55,8 +56,8 @@ public class Initialize {
         Money redbull = Money.of(15000, currencyUnit);
         Integer userId = mAddTransactionViewModel.getUserId("John@gmail.com");
 
-        Item item = new Item(userId, "redbull", redbull, ItemCategory.DRINK);
-        mAddTransactionViewModel.addItem(item);
+//        Item item = new Item(userId, "redbull", redbull, ItemCategory.DRINK);
+//        mAddTransactionViewModel.addItem(item);
 
         Money cake = Money.of(20000, currencyUnit);
 
