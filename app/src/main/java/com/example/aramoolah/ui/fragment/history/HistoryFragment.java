@@ -19,17 +19,27 @@ import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.data.model.Transaction;
+import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.databinding.FragmentHistoryBinding;
 import com.example.aramoolah.viewmodel.HistoryViewModel;
 
+import org.javamoney.moneta.Money;
+
+import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.YearMonth;
+import java.util.Currency;
 import java.util.List;
+import java.util.Map;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 
 public class HistoryFragment extends Fragment {
 
     private FragmentHistoryBinding binding;
-    private HistoryViewModel mHistoryViewModel;
-    private RecyclerView history_recycler;
     private HistoryAdapter historyAdapter;
 
     @Override
@@ -45,7 +55,7 @@ public class HistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mHistoryViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+        HistoryViewModel mHistoryViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
 
         Session session = new Session(requireContext());
         int userId = session.getUserId();
@@ -55,15 +65,25 @@ public class HistoryFragment extends Fragment {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+//        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
+//        Money money = Money.of(15000, currencyUnit);
+//        LocalDateTime dateTime = LocalDateTime.of(2023,5,1,0,0);
+//        Transaction temp = new Transaction(1,1, TransactionType.INCOME, money, 1, dateTime);
+//        mHistoryViewModel.addTransaction(temp);
 
         historyAdapter = new HistoryAdapter();
-        history_recycler = binding.historyRecycler;
+        RecyclerView history_recycler = binding.historyRecycler;
         history_recycler.setAdapter(historyAdapter);
-        history_recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        history_recycler.setLayoutManager(linearLayoutManager);
         try {
             mHistoryViewModel.getCurrentUserTransactionList().observe(getViewLifecycleOwner(), transactionListObserver);
             mHistoryViewModel.getCurrentUserItemList().observe(getViewLifecycleOwner(), itemListObserver);
             mHistoryViewModel.getCurrentUserWalletList().observe(getViewLifecycleOwner(), walletListObserver);
+            mHistoryViewModel.getMapMonthToMoney().observe(getViewLifecycleOwner(), mapMonthToMoneyObserver);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -96,6 +116,13 @@ public class HistoryFragment extends Fragment {
         @Override
         public void onChanged(List<Wallet> wallets) {
             historyAdapter.updateWalletList(wallets);
+        }
+    };
+
+    final Observer<Map<YearMonth, BigInteger>> mapMonthToMoneyObserver = new Observer<Map<YearMonth, BigInteger>>() {
+        @Override
+        public void onChanged(Map<YearMonth, BigInteger> stringBigIntegerMap) {
+            historyAdapter.updateMapMonthToMoney(stringBigIntegerMap);
         }
     };
 

@@ -17,12 +17,17 @@ import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.Wallet;
 
 import java.math.BigInteger;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -33,9 +38,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private List<Transaction> transactionList;
     private List<Item> itemList;
     private List<Wallet> walletList;
-    private Map<String, BigInteger> mapMonthToMoney;
+    private Map<YearMonth, BigInteger> mapMonthToMoney;
+    private int currentTransactionInd;
+    private YearMonth oldYearMonth;
+    private YearMonth currentYearMonth;
+    private final NumberFormat moneyFormat;
 
     public HistoryAdapter(){
+        moneyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
         transactionList = new ArrayList<>();
         itemList = new ArrayList<>();
         walletList = new ArrayList<>();
@@ -62,10 +72,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof TransactionViewHolder){
-            Transaction transaction = transactionList.get(position);
-            ((TransactionViewHolder) holder) .bindTransactionViewHolder(transaction, itemList, walletList);
+            Transaction transaction = transactionList.get(currentTransactionInd);
+            currentTransactionInd--;
+            ((TransactionViewHolder) holder) .bindTransactionViewHolder(transaction, itemList, walletList, moneyFormat);
         }
         if(holder instanceof MonthViewHolder){
+            ((MonthViewHolder) holder).bindMonthViewHolder(mapMonthToMoney, currentYearMonth, moneyFormat);
 
         }
 
@@ -73,19 +85,34 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-
-        return transactionList.size();
+        return transactionList.size() + mapMonthToMoney.size();
     }
 
     @Override
     public int getItemViewType(int position){
-        return super.getItemViewType(position);
+        Log.d("History adapter", "postion:" + currentTransactionInd);
+        int result = TRANSACTION_VIEW;
+
+        YearMonth nextYearMonth = null;
+        nextYearMonth = YearMonth.from(transactionList.get(currentTransactionInd).localDateTime);
+
+
+        if(currentYearMonth == null){
+            result = MONTH_VIEW;
+        } else if(nextYearMonth.isBefore(currentYearMonth)){
+            result = MONTH_VIEW;
+        }
+        oldYearMonth = currentYearMonth;
+        currentYearMonth = nextYearMonth;
+        return result;
+//        return super.getItemViewType(position);
     }
 
     public void updateTransactionList(List<Transaction> transactionList){
         this.transactionList.clear();
         this.transactionList = transactionList;
-        Collections.reverse(this.transactionList);
+//        currentYearMonth = YearMonth.from(this.transactionList.get(0).localDateTime);
+        currentTransactionInd = transactionList.size() - 1;
         //TODO: (Normal) notifyDataSetChanged()
         notifyDataSetChanged();
     }
@@ -102,7 +129,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
-    public void updateMapMonthToMoney(Map<String, BigInteger> mapMonthToMoney){
+    public void updateMapMonthToMoney(Map<YearMonth, BigInteger> mapMonthToMoney){
         this.mapMonthToMoney.clear();
         this.mapMonthToMoney = mapMonthToMoney;
         notifyDataSetChanged();
@@ -120,7 +147,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.time_txt = view.findViewById(R.id.history_time_txt);
         }
 
-        public void bindTransactionViewHolder(Transaction transaction, List<Item> itemList, List<Wallet> walletList){
+        public void bindTransactionViewHolder(Transaction transaction, List<Item> itemList, List<Wallet> walletList, NumberFormat moneyFormat){
             // TODO: Add transfer between wallet
             if(transaction.transactionType.equals(TransactionType.EXPENSE)){
                 transactionType_txt.setText("-");
@@ -130,13 +157,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 transactionType_txt.setText("+");
                 transactionType_txt.setTextColor(Color.GREEN);
                 money_txt.setTextColor(Color.GREEN);
+            } else {
+                transactionType_txt.setText("⇌");
+                transactionType_txt.setTextColor(Color.YELLOW);
+                money_txt.setTextColor(Color.YELLOW);
             }
             //TODO: (Low) String.format
 
-            money_txt.setText(transaction.amountOfMoney.getNumberStripped().toBigInteger().toString());
+            money_txt.setText(moneyFormat.format(transaction.amountOfMoney.getNumberStripped().toBigInteger()));
             for(Item item: itemList){
                 if(transaction.itemId.equals(item.itemId)){
-                    itemCategory_txt.setText(item.itemCategory.toString());
+                    String itemCategory = item.itemCategory.toString();
+                    String firstChar = itemCategory.substring(0, 1);
+                    String remainingChar = itemCategory.substring(1).toLowerCase();
+
+                    itemCategory_txt.setText(String.format("%s%s", firstChar, remainingChar));
                     break;
                 }
             }
@@ -163,7 +198,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             date_txt = itemView.findViewById(R.id.history_date_txt);
         }
 
-        public void bindMonthViewHolder(Map<String, BigInteger> mapMonthToMoney){
+        public void bindMonthViewHolder(Map<YearMonth, BigInteger> mapMonthToMoney, YearMonth currentYearMonth, NumberFormat moneyFormat){
+            DateTimeFormatter monthYearFormat = DateTimeFormatter.ofPattern("MM/yyyy");
+            date_txt.setText(monthYearFormat.format(currentYearMonth));
+            total_txt.setText(moneyFormat.format(mapMonthToMoney.get(currentYearMonth)));
         }
     }
 }
