@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Android/Sdk/icons/material/materialicons/library_books/baseline_library_books_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Android/Sdk/icons/material/materialicons/arrow_drop_down/baseline_arrow_drop_down_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,7 +33,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_library_books_black_24dp" />
+                            <entry key="outputName" value="ic_baseline_arrow_drop_down_24" />
                           </map>
                         </option>
                       </PersistentState>

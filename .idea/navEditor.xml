@@ -264,6 +264,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="nav_list_item_category_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="594" />
+                            <option name="y" value="409" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                 </map>
               </option>
             </LayoutPositions>

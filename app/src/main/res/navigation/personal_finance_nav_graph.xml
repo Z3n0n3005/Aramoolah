@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_nav_dashboard_fragment_to_nav_add_wallet_fragment"
             app:destination="@id/nav_add_wallet_fragment" />
+        <action
+            android:id="@+id/action_nav_dashboard_fragment_to_nav_list_item_category_fragment"
+            app:destination="@id/nav_list_item_category_fragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_add_wallet_fragment"
@@ -41,6 +44,15 @@
         tools:layout="@layout/fragment_add_wallet" >
         <action
             android:id="@+id/action_nav_add_wallet_fragment_to_nav_dashboard_fragment"
+            app:destination="@id/nav_dashboard_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_list_item_category_fragment"
+        android:name="com.example.aramoolah.ui.fragment.listitemcategory.ListItemCategoryFragment"
+        android:label="Item category list"
+        tools:layout="@layout/fragment_list_item_category" >
+        <action
+            android:id="@+id/action_nav_list_item_category_fragment_to_nav_dashboard_fragment"
             app:destination="@id/nav_dashboard_fragment" />
     </fragment>
 
