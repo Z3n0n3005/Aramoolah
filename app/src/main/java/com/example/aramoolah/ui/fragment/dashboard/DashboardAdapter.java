@@ -13,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Wallet;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 
 public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private static final int WALLET_TITLE = 0;
@@ -100,8 +103,11 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             walletInfo_btn = itemView.findViewById(R.id.dashboard_wallet_info_btn);
         }
 
+        //Set wallet info into button on bind
         public void bindWalletInfoViewHolder(Wallet wallet){
-            String btnText = wallet.walletName + " " + wallet.totalAmount.toString();
+            NumberFormat moneyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
+
+            String btnText = wallet.walletName + " " + moneyFormat.format(wallet.totalAmount.getNumberStripped().toBigInteger());
             walletInfo_btn.setText(btnText);
         }
     }
@@ -114,7 +120,5 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             walletAdd_btn = itemView.findViewById(R.id.dashboard_wallet_add_btn);
             walletAdd_btn.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.action_nav_dashboard_fragment_to_nav_add_wallet_fragment));
         }
-
-
     }
 }
