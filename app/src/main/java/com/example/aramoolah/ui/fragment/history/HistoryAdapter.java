@@ -79,7 +79,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position){
-        return transactionList.size() + mapMonthToMoney.size();
+        return super.getItemViewType(position);
     }
 
     public void updateTransactionList(List<Transaction> transactionList){
@@ -125,11 +125,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if(transaction.transactionType.equals(TransactionType.EXPENSE)){
                 transactionType_txt.setText("-");
                 transactionType_txt.setTextColor(Color.RED);
+                money_txt.setTextColor(Color.RED);
             } else if(transaction.transactionType.equals(TransactionType.INCOME)){
                 transactionType_txt.setText("+");
                 transactionType_txt.setTextColor(Color.GREEN);
+                money_txt.setTextColor(Color.GREEN);
             }
             //TODO: (Low) String.format
+
             money_txt.setText(transaction.amountOfMoney.getNumberStripped().toBigInteger().toString());
             for(Item item: itemList){
                 if(transaction.itemId.equals(item.itemId)){
@@ -145,7 +148,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             }
 
-            DateTimeFormatter transactionDayFormat = DateTimeFormatter.ofPattern("dd MM yyyy");
+            DateTimeFormatter transactionDayFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDateTime time = transaction.localDateTime;
             time_txt.setText(transactionDayFormat.format(time));
         }

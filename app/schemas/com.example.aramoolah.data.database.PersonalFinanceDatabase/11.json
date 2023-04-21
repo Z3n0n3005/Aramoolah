@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 11,
-    "identityHash": "f5d2f5e912266c3204e4cd27ab96f7b7",
+    "identityHash": "1ac1e1982560ad37ba47f33a2299d240",
     "entities": [
       {
         "tableName": "transaction_table",
@@ -173,7 +173,7 @@
       },
       {
         "tableName": "item_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER, `itemName` TEXT, `cost` TEXT, `itemCategory` TEXT, FOREIGN KEY(`userId`) REFERENCES `user_table`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER, `itemName` TEXT, `itemCategory` TEXT, FOREIGN KEY(`userId`) REFERENCES `user_table`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "itemId",
@@ -190,12 +190,6 @@
           {
             "fieldPath": "itemName",
             "columnName": "itemName",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "cost",
-            "columnName": "cost",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -301,7 +295,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f5d2f5e912266c3204e4cd27ab96f7b7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1ac1e1982560ad37ba47f33a2299d240')"
     ]
   }
 }
