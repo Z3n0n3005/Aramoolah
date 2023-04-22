@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_choose_user_fragment"
-        android:name="com.example.aramoolah.ui.fragment.chooseuser.ChooseUserFragment"
+        android:name="com.example.aramoolah.ui.fragment.choose_user.ChooseUserFragment"
         android:label="fragment_choose_user"
         tools:layout="@layout/fragment_choose_user" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_add_user_fragment"
-        android:name="com.example.aramoolah.ui.fragment.adduser.AddUserFragment"
+        android:name="com.example.aramoolah.ui.fragment.add_user.AddUserFragment"
         android:label="fragment_add_user"
         tools:layout="@layout/fragment_add_user" >
         <action

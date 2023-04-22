@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.addtransaction.AddTransactionFragment">
+    tools:context=".ui.fragment.add_transaction.AddTransactionFragment">
 
     <EditText
         android:id="@+id/add_transaction_cost_et"

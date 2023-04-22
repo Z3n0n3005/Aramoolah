@@ -1,4 +1,4 @@
-package com.example.aramoolah.ui.fragment.addtransaction;
+package com.example.aramoolah.ui.fragment.add_transaction;
 
 import android.content.Context;
 import android.database.DataSetObserver;

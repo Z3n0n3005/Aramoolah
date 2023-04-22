@@ -1,4 +1,4 @@
-package com.example.aramoolah.ui.fragment.chooseuser;
+package com.example.aramoolah.ui.fragment.choose_user;
 
 import android.os.Bundle;
 
@@ -14,11 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.databinding.FragmentChooseUserBinding;
-import com.example.aramoolah.util.Initialize;
-import com.example.aramoolah.viewmodel.AddTransactionViewModel;
 import com.example.aramoolah.viewmodel.LoginViewModel;
 
 import java.security.NoSuchAlgorithmException;

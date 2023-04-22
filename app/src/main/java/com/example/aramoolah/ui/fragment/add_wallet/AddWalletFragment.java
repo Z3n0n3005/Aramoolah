@@ -1,7 +1,5 @@
-package com.example.aramoolah.ui.fragment.addwallet;
+package com.example.aramoolah.ui.fragment.add_wallet;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;

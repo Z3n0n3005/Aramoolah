@@ -1,4 +1,4 @@
-package com.example.aramoolah.ui.fragment.listitemcategory;
+package com.example.aramoolah.ui.fragment.list_item_category;
 
 import android.os.Bundle;
 

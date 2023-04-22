@@ -41,4 +41,6 @@
     <string name="add_user_password_hint">Pin</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_item_category_hint">Item category name</string>
+    <string name="add_item_hint">Item name</string>
 </resources>
