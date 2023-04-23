@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.Wallet;
@@ -54,5 +55,15 @@ public class AddTransactionViewModel extends PersonalFinanceViewModel{
             transactionRepository.addTransaction(transaction);
             walletRepository.updateTotalAmount(transaction.walletId, updatedWalletMoney);
         }).start();
+    }
+
+    public String getItemCategoryName(Item item){
+        class Foo implements Runnable{
+
+            @Override
+            public void run() {
+
+            }
+        }
     }
 }

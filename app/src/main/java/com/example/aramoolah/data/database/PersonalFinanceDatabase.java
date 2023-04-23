@@ -8,16 +8,18 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import com.example.aramoolah.data.converter.Converter;
+import com.example.aramoolah.data.dao.ItemCategoryDao;
 import com.example.aramoolah.data.dao.ItemDao;
 import com.example.aramoolah.data.dao.TransactionDao;
 import com.example.aramoolah.data.dao.UserDao;
 import com.example.aramoolah.data.dao.WalletDao;
 import com.example.aramoolah.data.model.Item;
+import com.example.aramoolah.data.model.ItemCategory;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.model.Wallet;
 
-@Database(entities = {Transaction.class, Wallet.class, Item.class, User.class}, version = 14)
+@Database(entities = {Transaction.class, Wallet.class, Item.class, User.class, ItemCategory.class}, version = 15)
 @TypeConverters({Converter.class})
 public abstract class PersonalFinanceDatabase extends RoomDatabase {
     public volatile static PersonalFinanceDatabase personalFinanceDatabase = null;
@@ -25,6 +27,7 @@ public abstract class PersonalFinanceDatabase extends RoomDatabase {
     public abstract WalletDao walletDao();
     public abstract ItemDao itemDao();
     public abstract UserDao userDao();
+    public abstract ItemCategoryDao itemCategoryDao();
 
     public static PersonalFinanceDatabase getPersonalFinanceDatabase(Context context){
         if(personalFinanceDatabase == null){

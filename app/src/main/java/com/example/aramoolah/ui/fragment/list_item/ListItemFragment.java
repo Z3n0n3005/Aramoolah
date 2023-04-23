@@ -16,9 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
-import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.ItemCategory;
 import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.databinding.FragmentListItemBinding;
 import com.example.aramoolah.viewmodel.ListItemViewModel;

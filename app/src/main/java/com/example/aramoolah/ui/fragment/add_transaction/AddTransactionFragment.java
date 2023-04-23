@@ -16,7 +16,7 @@ import androidx.navigation.Navigation;
 
 import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
-import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.ItemCategory;
 import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.TransactionType;

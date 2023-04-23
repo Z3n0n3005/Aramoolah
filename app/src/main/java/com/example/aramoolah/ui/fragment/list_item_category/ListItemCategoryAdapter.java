@@ -13,7 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aramoolah.R;
-import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.ItemCategory;
 
 public class ListItemCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int ITEM_CATEGORY = 0;

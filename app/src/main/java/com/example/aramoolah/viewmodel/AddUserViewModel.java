@@ -10,7 +10,7 @@ import com.example.aramoolah.data.dao.UserDao;
 import com.example.aramoolah.data.dao.WalletDao;
 import com.example.aramoolah.data.database.PersonalFinanceDatabase;
 import com.example.aramoolah.data.model.Item;
-import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.ItemCategory;
 import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.model.Wallet;
 import com.example.aramoolah.data.repository.ItemRepository;
@@ -21,16 +21,8 @@ import com.example.aramoolah.util.security.Hash;
 import org.javamoney.moneta.Money;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Currency;
-import java.util.List;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 

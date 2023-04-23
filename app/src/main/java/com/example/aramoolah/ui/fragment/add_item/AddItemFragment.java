@@ -14,8 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.aramoolah.R;
-import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.ItemCategory;
 import com.example.aramoolah.databinding.FragmentAddItemBinding;
 
 public class AddItemFragment extends Fragment {

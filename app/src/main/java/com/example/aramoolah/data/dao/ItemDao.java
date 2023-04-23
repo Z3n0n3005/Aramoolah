@@ -9,7 +9,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.aramoolah.data.model.Item;
-import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.ItemCategory;
 
 import java.util.List;
 import java.util.Map;
@@ -34,8 +34,9 @@ public interface ItemDao {
     @Query("SELECT * FROM item_table i WHERE i.itemId = :itemId")
     Item getItem(Integer itemId);
 
-    @Query("SELECT itemCategory FROM item_table WHERE itemName = :itemName")
-    ItemCategory getItemCategory(String itemName);
+    // TODO: Fix getItemCategory
+//    @Query("SELECT itemCategoryName FROM item_table i JOIN item_category_table ic ON i.itemCategoryId = ic.itemCategoryId WHERE itemName = :itemName")
+//    ItemCategory getItemCategory(String itemName);
 
     @MapInfo(keyColumn = "userId", valueColumn = "itemId")
     @Query("SELECT * FROM item_table i JOIN user_table u ON i.userId = u.userId")
