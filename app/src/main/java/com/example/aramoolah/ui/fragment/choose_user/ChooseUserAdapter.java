@@ -1,4 +1,4 @@
-package com.example.aramoolah.ui.fragment.chooseuser;
+package com.example.aramoolah.ui.fragment.choose_user;
 
 
 import android.content.Context;

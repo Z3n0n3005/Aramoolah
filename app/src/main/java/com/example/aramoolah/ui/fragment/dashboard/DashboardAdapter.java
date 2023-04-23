@@ -15,7 +15,6 @@ import com.example.aramoolah.data.model.Wallet;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,6 +22,8 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int WALLET_TITLE = 0;
     private static final int WALLET_INFO = 1;
     private static final int WALLET_ADD = 2;
+    private static final int ITEM_TITLE = 3;
+    private static final int ITEM_MORE = 4;
 
     private List<Wallet> walletList;
     Integer walletListSize = 0;
@@ -36,16 +37,24 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if(viewType == WALLET_TITLE){
-            View view = inflater.inflate(R.layout.layout_recycler_dashboard_wallet_title, parent, false);
+            View view = inflater.inflate(R.layout.layout_recycler_dashboard_title, parent, false);
             return new WalletTitleViewHolder(view);
         }
         if(viewType == WALLET_INFO){
-            View view = inflater.inflate(R.layout.layout_recycler_dashboard_wallet_info, parent, false);
+            View view = inflater.inflate(R.layout.layout_recycler_dashboard_info, parent, false);
             return new WalletInfoViewHolder(view);
         }
         if(viewType == WALLET_ADD){
-            View view = inflater.inflate(R.layout.layout_recycler_dashboard_wallet_add, parent, false);
+            View view = inflater.inflate(R.layout.layout_recycler_dashboard_add, parent, false);
             return new WalletAddViewHolder(view);
+        }
+        if(viewType == ITEM_TITLE){
+            View view = inflater.inflate(R.layout.layout_recycler_dashboard_title, parent, false);
+            return new ItemTitleViewHolder(view);
+        }
+        if(viewType == ITEM_MORE){
+            View view = inflater.inflate(R.layout.layout_recycler_dashboard_more, parent, false);
+            return new ItemMoreViewHolder(view);
         }
         return null;
     }
@@ -54,18 +63,27 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof  WalletTitleViewHolder){
             WalletTitleViewHolder wHolder = (WalletTitleViewHolder) holder;
-        } else if(holder instanceof WalletInfoViewHolder){
+        }
+        if(holder instanceof WalletInfoViewHolder){
             Wallet wallet = walletList.get(position-1);
             ((WalletInfoViewHolder) holder).bindWalletInfoViewHolder(wallet);
-        } else if(holder instanceof WalletAddViewHolder){
-            WalletAddViewHolder wHolder = (WalletAddViewHolder) holder;
         }
+        if(holder instanceof WalletAddViewHolder){
+            ((WalletAddViewHolder) holder).bindWalletAddViewHolder();
+        }
+        if(holder instanceof ItemTitleViewHolder){
+            ((ItemTitleViewHolder) holder).bindItemTitleViewHolder();
+        }
+        if(holder instanceof ItemMoreViewHolder){
+            ((ItemMoreViewHolder) holder).bindItemMoreViewHOlder();
+        }
+
 
     }
 
     @Override
     public int getItemCount() {
-        return walletListSize + 2;
+        return walletListSize + 4;
     }
 
     @Override
@@ -76,6 +94,10 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             return WALLET_INFO;
         } else if(position == walletListSize + 1) {
             return WALLET_ADD;
+        } else if(position == walletListSize + 2){
+            return ITEM_TITLE;
+        } else if(position == walletListSize + 3){
+            return ITEM_MORE;
         } else {
             return super.getItemViewType(position);
         }
@@ -100,7 +122,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         Button walletInfo_btn;
         public WalletInfoViewHolder(@NonNull View itemView) {
             super(itemView);
-            walletInfo_btn = itemView.findViewById(R.id.dashboard_wallet_info_btn);
+            walletInfo_btn = itemView.findViewById(R.id.dashboard_info_btn);
         }
 
         //Set wallet info into button on bind
@@ -117,8 +139,37 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public WalletAddViewHolder(@NonNull View itemView) {
             super(itemView);
-            walletAdd_btn = itemView.findViewById(R.id.dashboard_wallet_add_btn);
+            walletAdd_btn = itemView.findViewById(R.id.dashboard_add_btn);
+        }
+
+        public void bindWalletAddViewHolder(){
+            walletAdd_btn.setText("Add Wallet");
             walletAdd_btn.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.action_nav_dashboard_fragment_to_nav_add_wallet_fragment));
+        }
+    }
+
+    public static class ItemTitleViewHolder extends RecyclerView.ViewHolder{
+        TextView itemTitle_txt;
+        public ItemTitleViewHolder(@NonNull View itemView) {
+            super(itemView);
+            itemTitle_txt = itemView.findViewById(R.id.dashboard_wallet_title_txt);
+        }
+
+        public void bindItemTitleViewHolder(){
+            itemTitle_txt.setText("List of items");
+        }
+    }
+
+    public static class ItemMoreViewHolder extends RecyclerView.ViewHolder{
+        Button itemMore_btn;
+        public ItemMoreViewHolder(@NonNull View itemView) {
+            super(itemView);
+            itemMore_btn = itemView.findViewById(R.id.dashboard_more_btn);
+        }
+
+        public void bindItemMoreViewHOlder(){
+            itemMore_btn.setText("More items");
+            itemMore_btn.setOnClickListener(view -> Navigation.findNavController(view).navigate(R.id.action_nav_dashboard_fragment_to_nav_list_item_category_fragment));
         }
     }
 }

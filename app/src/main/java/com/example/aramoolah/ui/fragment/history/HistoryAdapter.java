@@ -54,8 +54,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //TODO: Create HistoryAdapter
-        //TODO: Color coding TransactionType -> (+): Green, (-): Red
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         if(viewType == TRANSACTION_VIEW){

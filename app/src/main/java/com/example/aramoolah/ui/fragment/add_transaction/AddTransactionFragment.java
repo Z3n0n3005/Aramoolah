@@ -1,7 +1,5 @@
-package com.example.aramoolah.ui.fragment.addtransaction;
+package com.example.aramoolah.ui.fragment.add_transaction;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +19,9 @@ import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.ItemCategory;
 import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.data.model.Transaction;
-import com.example.aramoolah.databinding.FragmentAddTransactionBinding;
 import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.Wallet;
-import com.example.aramoolah.util.Initialize;
+import com.example.aramoolah.databinding.FragmentAddTransactionBinding;
 import com.example.aramoolah.viewmodel.AddTransactionViewModel;
 
 import org.javamoney.moneta.Money;

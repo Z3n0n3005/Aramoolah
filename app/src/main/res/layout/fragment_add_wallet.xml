@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.addwallet.AddWalletFragment">
+    tools:context=".ui.fragment.add_wallet.AddWalletFragment">
 
     <Button
         android:id="@+id/add_wallet_submit_btn"

@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_add_transaction_fragment"
-        android:name="com.example.aramoolah.ui.fragment.addtransaction.AddTransactionFragment"
+        android:name="com.example.aramoolah.ui.fragment.add_transaction.AddTransactionFragment"
         android:label="@string/add_transaction_fragment_label"
         tools:layout="@layout/fragment_add_transaction">
 
@@ -33,15 +33,63 @@
         <action
             android:id="@+id/action_nav_dashboard_fragment_to_nav_add_wallet_fragment"
             app:destination="@id/nav_add_wallet_fragment" />
+        <action
+            android:id="@+id/action_nav_dashboard_fragment_to_nav_list_item_category_fragment"
+            app:destination="@id/nav_list_item_category_fragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_add_wallet_fragment"
-        android:name="com.example.aramoolah.ui.fragment.addwallet.AddWalletFragment"
+        android:name="com.example.aramoolah.ui.fragment.add_wallet.AddWalletFragment"
         android:label="@string/add_wallet_fragment_label"
         tools:layout="@layout/fragment_add_wallet" >
         <action
             android:id="@+id/action_nav_add_wallet_fragment_to_nav_dashboard_fragment"
             app:destination="@id/nav_dashboard_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_list_item_category_fragment"
+        android:name="com.example.aramoolah.ui.fragment.list_item_category.ListItemCategoryFragment"
+        android:label="Item category list"
+        tools:layout="@layout/fragment_list_item_category" >
+        <action
+            android:id="@+id/action_nav_list_item_category_fragment_to_nav_dashboard_fragment"
+            app:destination="@id/nav_dashboard_fragment" />
+        <action
+            android:id="@+id/action_nav_list_item_category_fragment_to_nav_list_item_fragment"
+            app:destination="@id/nav_list_item_fragment" />
+        <action
+            android:id="@+id/action_nav_list_item_category_fragment_to_nav_add_item_category_fragment"
+            app:destination="@id/nav_add_item_category_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_list_item_fragment"
+        android:name="com.example.aramoolah.ui.fragment.list_item.ListItemFragment"
+        android:label="Item list"
+        tools:layout="@layout/fragment_list_item">
+        <action
+            android:id="@+id/action_nav_list_item_fragment_to_nav_list_item_category_fragment"
+            app:destination="@id/nav_list_item_category_fragment" />
+        <action
+            android:id="@+id/action_nav_list_item_fragment_to_nav_add_item_fragment"
+            app:destination="@id/nav_add_item_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_add_item_category_fragment"
+        android:name="com.example.aramoolah.ui.fragment.add_item_category.AddItemCategoryFragment"
+        android:label="Add item category"
+        tools:layout="@layout/fragment_add_item_category" >
+        <action
+            android:id="@+id/action_nav_add_item_category_fragment_to_nav_list_item_category_fragment"
+            app:destination="@id/nav_list_item_category_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_add_item_fragment"
+        android:name="com.example.aramoolah.ui.fragment.add_item.AddItemFragment"
+        android:label="Add item"
+        tools:layout="@layout/fragment_add_item" >
+        <action
+            android:id="@+id/action_nav_add_item_fragment_to_nav_list_item_fragment"
+            app:destination="@id/nav_list_item_fragment" />
     </fragment>
 
 </navigation>
