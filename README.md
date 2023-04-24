@@ -25,3 +25,13 @@ Can it be downloaded and used?
 - Not yet, so have these screenshot for now  
 
 ## Screenshots
+<p align="center">
+<img src="https://github.com/Z3n0n3005/Aramoolah/blob/main/screenshot/choose_user.jpg?raw=true" alt= “” width="200" height="400"><br>
+Choose user screen<br><br>
+<img src="https://github.com/Z3n0n3005/Aramoolah/blob/main/screenshot/login.jpg?raw=true" alt= “” width="200" height="400"><br>
+Login screen<br><br>
+<img src="https://github.com/Z3n0n3005/Aramoolah/blob/main/screenshot/dashboard.jpg?raw=true" alt= “” width="200" height="400"><br>
+Dashboard screen<br><br>
+<img src="https://github.com/Z3n0n3005/Aramoolah/blob/main/screenshot/history.jpg?raw=true" alt= “” width="200" height="400"><br>
+History screen  
+</p>
