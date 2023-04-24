@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
+import com.example.aramoolah.data.model.ItemCategory;
 import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.TransactionType;
@@ -82,6 +83,7 @@ public class HistoryFragment extends Fragment {
         try {
             mHistoryViewModel.getCurrentUserTransactionList().observe(getViewLifecycleOwner(), transactionListObserver);
             mHistoryViewModel.getCurrentUserItemList().observe(getViewLifecycleOwner(), itemListObserver);
+            mHistoryViewModel.getMapTransactionIdToItemCategoryName().observe(getViewLifecycleOwner(), mapTransactionIdToItemCategoryNameObserver);
             mHistoryViewModel.getCurrentUserWalletList().observe(getViewLifecycleOwner(), walletListObserver);
             mHistoryViewModel.getMapMonthToMoney().observe(getViewLifecycleOwner(), mapMonthToMoneyObserver);
         } catch (InterruptedException e) {
@@ -123,6 +125,13 @@ public class HistoryFragment extends Fragment {
         @Override
         public void onChanged(Map<YearMonth, BigInteger> stringBigIntegerMap) {
             historyAdapter.updateMapMonthToMoney(stringBigIntegerMap);
+        }
+    };
+
+    final Observer<Map<Long, String>> mapTransactionIdToItemCategoryNameObserver = new Observer<Map<Long, String>>() {
+        @Override
+        public void onChanged(Map<Long, String> mapTransactionIdToItemCategoryName) {
+            historyAdapter.updateMapTransactionIdToItemCategoryName(mapTransactionIdToItemCategoryName);
         }
     };
 

@@ -1,14 +1,36 @@
 package com.example.aramoolah.data.model;
 
-public enum ItemCategory {
-    FOOD, // Bar, cafe, groceries, restaurant, fast-food
-    ENTERTAINMENT, // Toys, games, subscription, hobby
-    SHOPPING, // Clothes, shoes, drugs, electronics, gifts, home accessory, accessory, kids, pets, tools
-    HOUSING, // Energy, water, rent, mortgage, insurance
-    TRANSPORTATION, // Business trips, long distance, public transport, taxi
-    MAINTENANCE, // Vehicle, housing, equipment maintainance
-    COMMUNICATION, // Software, internet, phone and postal service, PC
-    INVESTMENT, // For investing in stocks or bonds, no bank saving though
-    INCOME, // Checks, coupons, Child support, Dues & grants, Gifts, Interests, dividends, Lending, renting, Lottery, gambling, Refunds (tax, purchase), Rental income, Sale, Wage, invoices
-    OTHER // For everything else
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "item_category_table",
+    indices = {
+        @Index(value = {"itemCategoryName"}),
+        @Index(value = {"userId"})
+    },
+    foreignKeys = {
+        @ForeignKey(entity = User.class, parentColumns = "userId", childColumns = "userId", onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)
+    }
+)
+public class ItemCategory {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "itemCategoryId")
+    public Integer itemCategoryId;
+    @ColumnInfo(name = "userId")
+    public Integer userId;
+    @ColumnInfo(name = "itemCategoryName")
+    public String itemCategoryName;
+
+    public ItemCategory(Integer userId, String itemCategoryName){
+        this.userId = userId;
+        this.itemCategoryName = itemCategoryName;
+    }
+
+    @NonNull
+    @Override
+    public String toString(){return itemCategoryName;}
 }

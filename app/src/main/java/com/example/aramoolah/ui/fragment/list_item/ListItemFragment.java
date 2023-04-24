@@ -16,13 +16,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
-import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.ItemCategory;
 import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.databinding.FragmentListItemBinding;
 import com.example.aramoolah.viewmodel.ListItemViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListItemFragment extends Fragment {
@@ -51,20 +51,23 @@ public class ListItemFragment extends Fragment {
             throw new RuntimeException(e);
         }
 
+        // Get Item category from shared preference
+        SharedPreferences itemCategoryPref = getActivity().getSharedPreferences("itemCategory", Context.MODE_PRIVATE);
+        int itemCategoryId = itemCategoryPref.getInt("itemCategory", -1);
+
         RecyclerView listItemRecycler = binding.recyclerListItem;
         listItemAdapter = new ListItemAdapter();
         listItemRecycler.setAdapter(listItemAdapter);
         listItemRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Get Item category from shared preference
-        SharedPreferences itemCategoryPref = getActivity().getSharedPreferences("itemCategory", Context.MODE_PRIVATE);
-        ItemCategory itemCategory = ItemCategory.valueOf(itemCategoryPref.getString("itemCategory", "Other"));
-
+        List<Item> itemList = null;
         try {
-            mListItemViewModel.getItemList(itemCategory).observe(getViewLifecycleOwner(), itemListObserver);
+            itemList = mListItemViewModel.getItemList(itemCategoryId);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        listItemAdapter.updateItemList(itemList);
+
     }
 
     final Observer<List<Item>> itemListObserver = new Observer<List<Item>>() {

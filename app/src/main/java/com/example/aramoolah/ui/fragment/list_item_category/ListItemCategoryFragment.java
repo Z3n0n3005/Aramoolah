@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,8 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.databinding.FragmentListItemCategoryBinding;
 import com.example.aramoolah.viewmodel.PersonalFinanceViewModel;
+
+import java.util.List;
 
 public class ListItemCategoryFragment extends Fragment {
     FragmentListItemCategoryBinding binding;
@@ -37,5 +42,22 @@ public class ListItemCategoryFragment extends Fragment {
         listItemCategoryAdapter = new ListItemCategoryAdapter();
         listItemCategoryRecycler.setAdapter(listItemCategoryAdapter);
         listItemCategoryRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        Session session = new Session(requireContext());
+        int userId = session.getUserId();
+
+        try {
+            mPersonalFinanceViewModel.setCurrentUser(userId);
+            mPersonalFinanceViewModel.getCurrentUserItemCategoryList().observe(getViewLifecycleOwner(), itemCategoryListObserver);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    final Observer<List<ItemCategory>> itemCategoryListObserver = new Observer<List<ItemCategory>>() {
+        @Override
+        public void onChanged(List<ItemCategory> itemCategoryList) {
+            listItemCategoryAdapter.updateItemCategoryList(itemCategoryList);
+        }
+    };
 }

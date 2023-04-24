@@ -1,12 +1,12 @@
 package com.example.aramoolah.viewmodel;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+
+import com.example.aramoolah.data.dao.ItemCategoryDao;
 import com.example.aramoolah.data.dao.ItemDao;
 import com.example.aramoolah.data.dao.TransactionDao;
 import com.example.aramoolah.data.database.PersonalFinanceDatabase;
@@ -16,6 +16,7 @@ import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.ItemCategory;
 import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.model.Wallet;
+import com.example.aramoolah.data.repository.ItemCategoryRepository;
 import com.example.aramoolah.data.repository.ItemRepository;
 import com.example.aramoolah.data.repository.TransactionRepository;
 import com.example.aramoolah.data.model.Transaction;
@@ -25,42 +26,47 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class PersonalFinanceViewModel extends AndroidViewModel {
     public User currentUser;
 
     protected MutableLiveData<List<Transaction>> currentUserTransactionList;
     public MutableLiveData<List<Item>> currentUserItemList;
+    public MutableLiveData<List<ItemCategory>> currentUserItemCategoryList;
     public MutableLiveData<List<Wallet>> currentUserWalletList;
 
 
     TransactionRepository transactionRepository;
     ItemRepository itemRepository;
+    ItemCategoryRepository itemCategoryRepository;
     WalletRepository walletRepository;
     UserRepository userRepository;
 
     public PersonalFinanceViewModel(@NonNull Application application) throws InterruptedException {
         super(application);
+        PersonalFinanceDatabase instance = PersonalFinanceDatabase.getPersonalFinanceDatabase(application);
 
         //User
-        UserDao userDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).userDao();
+        UserDao userDao = instance.userDao();
         userRepository = new UserRepository(userDao);
 
 
         // Transaction
-        TransactionDao transactionDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).transactionDao();
+        TransactionDao transactionDao = instance.transactionDao();
         transactionRepository = new TransactionRepository(transactionDao);
-//        currentUserTransactionList = this.getCurrentUserTransactionList();
 
         // Item
-        ItemDao itemDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).itemDao();
+        ItemDao itemDao = instance.itemDao();
         itemRepository = new ItemRepository(itemDao);
-//        currentUserItemList  = this.getCurrentUserItemList();
+
+        // ItemCategory
+        ItemCategoryDao itemCategoryDao = instance.itemCategoryDao();
+        itemCategoryRepository = new ItemCategoryRepository(itemCategoryDao);
 
         //Wallet
-        WalletDao walletDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).walletDao();
+        WalletDao walletDao = instance.walletDao();
         walletRepository = new WalletRepository(walletDao);
-//        currentUserWalletList = this.getCurrentUserWalletList();
     }
 
     // Transaction
@@ -173,7 +179,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         return foo.getResult();
     }
 
-    public List<Item> getItemFromItemCategory(ItemCategory itemCategory) throws InterruptedException {
+    public List<Item> getItemList(Integer itemCategoryId) throws InterruptedException {
         class Foo implements Runnable{
             final List<Item> currentItemList = getCurrentUserItemList().getValue();
             final List<Item> filteredItemList = new ArrayList<>();
@@ -185,7 +191,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
             public void run() {
                 assert currentItemList != null;
                 for(Item item: currentItemList){
-                    if(item.itemCategory.equals(itemCategory)) {
+                    if(Objects.equals(item.itemCategoryId, itemCategoryId)) {
                         filteredItemList.add(item);
                     }
                 }
@@ -227,6 +233,62 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
             }
             public MutableLiveData<List<Item>> getResult(){
                 return currentUserItem;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    // Item Category
+    public MutableLiveData<List<ItemCategory>> getCurrentUserItemCategoryList() throws InterruptedException {
+        class Foo implements Runnable{
+            MutableLiveData<List<ItemCategory>> currentUserItemCategory;
+            @Override
+            public void run() {
+                if(currentUserItemCategoryList == null){
+                    Map<Integer, List<Integer>> currentUserItemCategoryIdMap = itemCategoryRepository.getUserItemCategory();
+                    List<Integer> itemCategoryIdList = currentUserItemCategoryIdMap.get(currentUser.userId);
+                    List<ItemCategory> itemCategoryList = new ArrayList<>();
+                    if(itemCategoryIdList != null){
+                        for (Integer itemCategoryId : itemCategoryIdList) {
+                            try {
+                                itemCategoryList.add(getItemCategory(itemCategoryId));
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+
+                    currentUserItemCategory = new MutableLiveData<>(itemCategoryList);
+                } else {
+                    currentUserItemCategory = currentUserItemCategoryList;
+                }
+            }
+
+            public MutableLiveData<List<ItemCategory>> getResult(){
+                return currentUserItemCategory;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public ItemCategory getItemCategory(Integer itemCategoryId) throws InterruptedException {
+        class Foo implements Runnable{
+            ItemCategory result;
+            @Override
+            public void run() {
+                result = itemCategoryRepository.getItemCategory(itemCategoryId);
+            }
+
+            public ItemCategory getResult(){
+                return result;
             }
         }
         Foo foo = new Foo();

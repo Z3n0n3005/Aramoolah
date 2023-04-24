@@ -2,7 +2,7 @@ package com.example.aramoolah.data.converter;
 
 import androidx.room.TypeConverter;
 
-import com.example.aramoolah.data.model.ItemCategory;
+import com.example.aramoolah.data.ItemCategory;
 import com.example.aramoolah.data.model.TransactionType;
 
 import org.javamoney.moneta.Money;

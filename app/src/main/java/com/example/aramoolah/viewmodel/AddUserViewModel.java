@@ -4,7 +4,9 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
 
+import com.example.aramoolah.data.dao.ItemCategoryDao;
 import com.example.aramoolah.data.dao.ItemDao;
 import com.example.aramoolah.data.dao.UserDao;
 import com.example.aramoolah.data.dao.WalletDao;
@@ -13,6 +15,7 @@ import com.example.aramoolah.data.model.Item;
 import com.example.aramoolah.data.model.ItemCategory;
 import com.example.aramoolah.data.model.User;
 import com.example.aramoolah.data.model.Wallet;
+import com.example.aramoolah.data.repository.ItemCategoryRepository;
 import com.example.aramoolah.data.repository.ItemRepository;
 import com.example.aramoolah.data.repository.UserRepository;
 import com.example.aramoolah.data.repository.WalletRepository;
@@ -21,16 +24,12 @@ import com.example.aramoolah.util.security.Hash;
 import org.javamoney.moneta.Money;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Currency;
 import java.util.List;
+import java.util.Map;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
@@ -38,17 +37,25 @@ public class AddUserViewModel extends AndroidViewModel {
     UserRepository userRepository;
     WalletRepository walletRepository;
     ItemRepository itemRepository;
+    ItemCategoryRepository itemCategoryRepository;
+
+    MutableLiveData<List<ItemCategory>> currentUserItemCategoryList;
     Hash mHash;
     public AddUserViewModel(@NonNull Application application) {
         super(application);
-        UserDao userDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).userDao();
+        PersonalFinanceDatabase instance = PersonalFinanceDatabase.getPersonalFinanceDatabase(application);
+
+        UserDao userDao = instance.userDao();
         userRepository = new UserRepository(userDao);
 
-        WalletDao walletDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).walletDao();
+        WalletDao walletDao = instance.walletDao();
         walletRepository = new WalletRepository(walletDao);
 
-        ItemDao itemDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).itemDao();
+        ItemDao itemDao = instance.itemDao();
         itemRepository = new ItemRepository(itemDao);
+
+        ItemCategoryDao itemCategoryDao = instance.itemCategoryDao();
+        itemCategoryRepository = new ItemCategoryRepository(itemCategoryDao);
 
         mHash = Hash.getInstance();
     }
@@ -100,6 +107,10 @@ public class AddUserViewModel extends AndroidViewModel {
             Wallet cash = new Wallet(userId, "Cash", money);
             walletRepository.addWallet(cash);
 
+            List<String> itemCategoryNameList = Arrays.asList("Food", "Entertainment", "Shopping", "Housing", "Transportation", "Maintenance", "Communication", "Investment", "Income", "Other");
+
+            initializeItemCategory(userId, itemCategoryNameList);
+
             String[] foodItemInit = {"Bar", "Cafe", "Groceries", "Restaurant", "Fast-food"};
             String[] entertainmentItemInit = {"Toys", "Games", "Subscription", "Hobby"};
             String[] shoppingItemInit = {"Clothing", "Shoe", "Drug", "Electronic", "Gift", "Home appliance", "Accessory", "Kid", "Pet", "Tool"};
@@ -112,24 +123,53 @@ public class AddUserViewModel extends AndroidViewModel {
             String[] otherItemInit = {"Other"};
 
             // Add some item
-            initializeItem(userId, foodItemInit, ItemCategory.FOOD);
-            initializeItem(userId, entertainmentItemInit, ItemCategory.ENTERTAINMENT);
-            initializeItem(userId, shoppingItemInit, ItemCategory.SHOPPING);
-            initializeItem(userId, housingItemInit, ItemCategory.HOUSING);
-            initializeItem(userId, transportationItemInit, ItemCategory.TRANSPORTATION);
-            initializeItem(userId, maintenanceItemInit, ItemCategory.MAINTENANCE);
-            initializeItem(userId, communicationItemInit, ItemCategory.COMMUNICATION);
-            initializeItem(userId, investmentItemInit, ItemCategory.INVESTMENT);
-            initializeItem(userId, incomeItemInit, ItemCategory.INCOME);
-            initializeItem(userId, otherItemInit, ItemCategory.OTHER);
+            try {
+                initializeItem(userId, foodItemInit, getCurrentUserItemCategoryId(userId, itemCategoryNameList.get(0)));
+                initializeItem(userId, entertainmentItemInit, getCurrentUserItemCategoryId(userId, itemCategoryNameList.get(1)));
+                initializeItem(userId, shoppingItemInit, getCurrentUserItemCategoryId(userId, itemCategoryNameList.get(2)));
+                initializeItem(userId, housingItemInit, getCurrentUserItemCategoryId(userId, itemCategoryNameList.get(3)));
+                initializeItem(userId, transportationItemInit, getCurrentUserItemCategoryId(userId, itemCategoryNameList.get(4)));
+                initializeItem(userId, maintenanceItemInit, getCurrentUserItemCategoryId(userId, itemCategoryNameList.get(5)));
+                initializeItem(userId, communicationItemInit, getCurrentUserItemCategoryId(userId, itemCategoryNameList.get(6)));
+                initializeItem(userId, investmentItemInit, getCurrentUserItemCategoryId(userId, itemCategoryNameList.get(7)));
+                initializeItem(userId, incomeItemInit, getCurrentUserItemCategoryId(userId, itemCategoryNameList.get(8)));
+                initializeItem(userId, otherItemInit, getCurrentUserItemCategoryId(userId, itemCategoryNameList.get(9)));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         });
         thread.start();
         thread.join();
     }
 
-    private void initializeItem(int userId, String[] itemNameList, ItemCategory itemCategory){
-        for(String itemName: itemNameList){
-            itemRepository.addItem(new Item(userId, itemName, itemCategory));
+    private void initializeItemCategory(Integer userId, List<String> itemCategoryNameList){
+        for(String itemCategoryName: itemCategoryNameList){
+            itemCategoryRepository.addItemCategory(new ItemCategory(userId, itemCategoryName));
         }
+    }
+
+    private void initializeItem(int userId, String[] itemNameList, Integer itemCategoryId){
+        for(String itemName: itemNameList){
+            itemRepository.addItem(new Item(userId, itemName, itemCategoryId));
+        }
+    }
+
+    private Integer getCurrentUserItemCategoryId(Integer userId, String itemCategoryName) throws InterruptedException {
+        class Foo implements Runnable{
+            Integer result;
+            @Override
+            public void run() {
+                result = itemCategoryRepository.getItemCategoryId(userId, itemCategoryName);
+            }
+
+            public Integer getResult(){
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
     }
 }
