@@ -86,7 +86,7 @@ public class ListItemCategoryAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         public void bindItemCategoryViewHolder(ItemCategory currentItemCategory){
             itemCategory_btn.setText(currentItemCategory.toString());
-            itemCategory_btn.setBackgroundColor(Color.GRAY);
+            itemCategory_btn.setBackgroundColor(Color.WHITE);
             itemCategory_btn.setOnClickListener(view -> {
                 SharedPreferences itemCategory = context.getSharedPreferences("itemCategory", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = itemCategory.edit();
