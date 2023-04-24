@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 
 import com.example.aramoolah.data.dao.ItemDao;
 import com.example.aramoolah.data.model.Item;
-import com.example.aramoolah.data.ItemCategory;
 
 import java.util.List;
 import java.util.Map;

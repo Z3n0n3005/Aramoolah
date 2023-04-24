@@ -66,15 +66,16 @@ public class HistoryFragment extends Fragment {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        historyAdapter = new HistoryAdapter();
+        RecyclerView history_recycler = binding.historyRecycler;
+        history_recycler.setAdapter(historyAdapter);
+
 //        CurrencyUnit currencyUnit = Monetary.getCurrency("VND");
 //        Money money = Money.of(15000, currencyUnit);
 //        LocalDateTime dateTime = LocalDateTime.of(2023,5,1,0,0);
 //        Transaction temp = new Transaction(1,1, TransactionType.INCOME, money, 1, dateTime);
 //        mHistoryViewModel.addTransaction(temp);
-
-        historyAdapter = new HistoryAdapter();
-        RecyclerView history_recycler = binding.historyRecycler;
-        history_recycler.setAdapter(historyAdapter);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
@@ -84,8 +85,8 @@ public class HistoryFragment extends Fragment {
             mHistoryViewModel.getCurrentUserTransactionList().observe(getViewLifecycleOwner(), transactionListObserver);
             mHistoryViewModel.getCurrentUserItemList().observe(getViewLifecycleOwner(), itemListObserver);
             mHistoryViewModel.getMapTransactionIdToItemCategoryName().observe(getViewLifecycleOwner(), mapTransactionIdToItemCategoryNameObserver);
-            mHistoryViewModel.getCurrentUserWalletList().observe(getViewLifecycleOwner(), walletListObserver);
             mHistoryViewModel.getMapMonthToMoney().observe(getViewLifecycleOwner(), mapMonthToMoneyObserver);
+            mHistoryViewModel.getCurrentUserWalletList().observe(getViewLifecycleOwner(), walletListObserver);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

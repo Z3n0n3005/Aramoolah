@@ -106,7 +106,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private void buildItemViewTypeList(){
         int currentTransactionInd = transactionList.size() - 1;
-        int position = transactionList.size() + mapPositionToMonth.size();
+        int position = transactionList.size() + mapMonthToMoney.size() - 1;
         YearMonth currentYearMonth = null;
 
         for(int p = position; p >= 0; p--){
@@ -140,7 +140,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void updateTransactionList(List<Transaction> transactionList){
         this.transactionList.clear();
         this.transactionList = transactionList;
-        buildItemViewTypeList();
+
         //TODO: (Normal) notifyDataSetChanged()
         notifyDataSetChanged();
     }
@@ -166,6 +166,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void updateMapMonthToMoney(Map<YearMonth, BigInteger> mapMonthToMoney){
         this.mapMonthToMoney.clear();
         this.mapMonthToMoney = mapMonthToMoney;
+        buildItemViewTypeList();
         notifyDataSetChanged();
     }
 

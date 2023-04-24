@@ -2,7 +2,6 @@ package com.example.aramoolah.data.converter;
 
 import androidx.room.TypeConverter;
 
-import com.example.aramoolah.data.ItemCategory;
 import com.example.aramoolah.data.model.TransactionType;
 
 import org.javamoney.moneta.Money;
@@ -32,18 +31,6 @@ public class Converter {
     @TypeConverter
     public static TransactionType stringToTransactionType(String transactionTypeStr){
         return (transactionTypeStr == null)? null : TransactionType.valueOf(transactionTypeStr);
-    }
-
-    // Item
-
-    @TypeConverter
-    public static String itemCategoryToString(ItemCategory itemCategory){
-        return (itemCategory == null)? null : itemCategory.toString();
-    }
-
-    @TypeConverter
-    public static ItemCategory stringToItemCategory(String itemCategoryStr){
-        return (itemCategoryStr == null)? null : ItemCategory.valueOf(itemCategoryStr);
     }
 
     //Wallet
