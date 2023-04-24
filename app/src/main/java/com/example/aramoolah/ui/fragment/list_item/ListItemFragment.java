@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,12 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.aramoolah.data.model.Item;
-import com.example.aramoolah.data.ItemCategory;
 import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.databinding.FragmentListItemBinding;
 import com.example.aramoolah.viewmodel.ListItemViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListItemFragment extends Fragment {
@@ -69,11 +66,4 @@ public class ListItemFragment extends Fragment {
         listItemAdapter.updateItemList(itemList);
 
     }
-
-    final Observer<List<Item>> itemListObserver = new Observer<List<Item>>() {
-        @Override
-        public void onChanged(List<Item> itemList) {
-            listItemAdapter.updateItemList(itemList);
-        }
-    };
 }

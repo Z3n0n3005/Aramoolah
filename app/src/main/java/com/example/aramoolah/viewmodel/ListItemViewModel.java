@@ -3,17 +3,10 @@ package com.example.aramoolah.viewmodel;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.aramoolah.data.dao.ItemDao;
 import com.example.aramoolah.data.database.PersonalFinanceDatabase;
-import com.example.aramoolah.data.model.Item;
-import com.example.aramoolah.data.ItemCategory;
 import com.example.aramoolah.data.repository.ItemRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ListItemViewModel extends PersonalFinanceViewModel{
     ItemRepository itemRepository;

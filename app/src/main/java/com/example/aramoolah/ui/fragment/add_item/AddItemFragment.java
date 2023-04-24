@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.aramoolah.data.ItemCategory;
 import com.example.aramoolah.databinding.FragmentAddItemBinding;
 
 public class AddItemFragment extends Fragment {
@@ -22,7 +21,6 @@ public class AddItemFragment extends Fragment {
 
     EditText addItem_et;
     Button addItem_btn;
-    ItemCategory itemCategory;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

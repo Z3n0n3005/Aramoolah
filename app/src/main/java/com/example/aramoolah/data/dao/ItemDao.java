@@ -9,7 +9,6 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.aramoolah.data.model.Item;
-import com.example.aramoolah.data.ItemCategory;
 
 import java.util.List;
 import java.util.Map;
