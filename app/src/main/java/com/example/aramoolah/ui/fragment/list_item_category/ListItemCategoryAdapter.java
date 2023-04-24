@@ -13,16 +13,19 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aramoolah.R;
-import com.example.aramoolah.data.ItemCategory;
+import com.example.aramoolah.data.model.ItemCategory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListItemCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int ITEM_CATEGORY = 0;
     private static final int ADD_CATEGORY = 1;
     //TODO: Turn ItemCategory from enum to db
-    private final ItemCategory[] itemCategoryList;
+    private List<ItemCategory> itemCategoryList;
 
     public ListItemCategoryAdapter(){
-        itemCategoryList = ItemCategory.values();
+        itemCategoryList = new ArrayList<>();
     }
 
     @NonNull
@@ -43,7 +46,7 @@ public class ListItemCategoryAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof ItemCategoryViewHolder){
-            ItemCategory itemCategory = itemCategoryList[position];
+            ItemCategory itemCategory = itemCategoryList.get(position);
             ((ItemCategoryViewHolder) holder).bindItemCategoryViewHolder(itemCategory);
         }
         if(holder instanceof AddCategoryViewHolder){
@@ -53,17 +56,23 @@ public class ListItemCategoryAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        return itemCategoryList.length + 1;
+        return itemCategoryList.size() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(position < itemCategoryList.length){
+        if(position < itemCategoryList.size()){
             return ITEM_CATEGORY;
-        } else if (position == itemCategoryList.length){
+        } else if (position == itemCategoryList.size()){
             return ADD_CATEGORY;
         }
         return super.getItemViewType(position);
+    }
+
+    public void updateItemCategoryList(List<ItemCategory> itemCategoryList){
+        this.itemCategoryList.clear();
+        this.itemCategoryList = itemCategoryList;
+        notifyDataSetChanged();
     }
 
     public static class ItemCategoryViewHolder extends RecyclerView.ViewHolder{
@@ -78,15 +87,12 @@ public class ListItemCategoryAdapter extends RecyclerView.Adapter<RecyclerView.V
         public void bindItemCategoryViewHolder(ItemCategory currentItemCategory){
             itemCategory_btn.setText(currentItemCategory.toString());
             itemCategory_btn.setBackgroundColor(Color.GRAY);
-            itemCategory_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    SharedPreferences itemCategory = context.getSharedPreferences("itemCategory", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = itemCategory.edit();
-                    editor.putString("itemCategory", currentItemCategory.toString());
-                    editor.apply();
-                    Navigation.findNavController(view).navigate(R.id.action_nav_list_item_category_fragment_to_nav_list_item_fragment);
-                }
+            itemCategory_btn.setOnClickListener(view -> {
+                SharedPreferences itemCategory = context.getSharedPreferences("itemCategory", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = itemCategory.edit();
+                editor.putInt("itemCategory", currentItemCategory.itemCategoryId);
+                editor.apply();
+                Navigation.findNavController(view).navigate(R.id.action_nav_list_item_category_fragment_to_nav_list_item_fragment);
             });
         }
     }

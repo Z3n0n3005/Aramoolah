@@ -25,35 +25,35 @@ public class ListItemViewModel extends PersonalFinanceViewModel{
         itemRepository = new ItemRepository(itemDao);
     }
 
-    public LiveData<List<Item>> getItemList(ItemCategory itemCategory) throws InterruptedException {
-        class Foo implements Runnable{
-            List<Item> currentUserItemList;
-            List<Item> result = new ArrayList<>();
-            MutableLiveData<List<Item>> lResult;
-            @Override
-            public void run() {
-                try {
-                    currentUserItemList = getCurrentUserItemList().getValue();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                assert currentUserItemList != null;
-                for(Item item: currentUserItemList){
-                    if(item.itemCategory.equals(itemCategory)){
-                        result.add(item);
-                    }
-                }
-                lResult = new MutableLiveData<>(result);
-            }
-
-            public LiveData<List<Item>> getResult(){
-                return lResult;
-            }
-        }
-        Foo foo = new Foo();
-        Thread thread = new Thread(foo);
-        thread.start();
-        thread.join();
-        return foo.getResult();
-    }
+//    public LiveData<List<Item>> getItemList(ItemCategory itemCategory) throws InterruptedException {
+//        class Foo implements Runnable{
+//            List<Item> currentUserItemList;
+//            List<Item> result = new ArrayList<>();
+//            MutableLiveData<List<Item>> lResult;
+//            @Override
+//            public void run() {
+//                try {
+//                    currentUserItemList = getCurrentUserItemList().getValue();
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                assert currentUserItemList != null;
+//                for(Item item: currentUserItemList){
+//                    if(item.itemCategory.equals(itemCategory)){
+//                        result.add(item);
+//                    }
+//                }
+//                lResult = new MutableLiveData<>(result);
+//            }
+//
+//            public LiveData<List<Item>> getResult(){
+//                return lResult;
+//            }
+//        }
+//        Foo foo = new Foo();
+//        Thread thread = new Thread(foo);
+//        thread.start();
+//        thread.join();
+//        return foo.getResult();
+//    }
 }

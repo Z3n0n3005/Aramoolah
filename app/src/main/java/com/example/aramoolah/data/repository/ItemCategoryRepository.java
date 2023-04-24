@@ -13,6 +13,7 @@ public class ItemCategoryRepository {
     public void updateItemCategory(ItemCategory itemCategory){itemCategoryDao.updateItemCategory(itemCategory);}
     public void deleteItemCategory(ItemCategory itemCategory){itemCategoryDao.deleteItemCategory(itemCategory);}
     public ItemCategory getItemCategory(Integer itemCategoryId){return itemCategoryDao.getItemCategory(itemCategoryId);}
+    public Integer getItemCategoryId(Integer userId, String itemCategoryName){return itemCategoryDao.getItemCategoryId(userId, itemCategoryName);}
     public String getItemCategoryName(Integer itemCategoryId){return itemCategoryDao.getItemCategoryName(itemCategoryId);}
     public Map<Integer, List<Integer>> getUserItemCategory(){return itemCategoryDao.getUserItemCategoryList();}
 }

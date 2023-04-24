@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
+import com.example.aramoolah.data.model.ItemCategory;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.TransactionType;
 import com.example.aramoolah.data.model.Wallet;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -37,11 +39,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private List<Transaction> transactionList;
     private List<Item> itemList;
+    private Map<Long, String> mapTransactionIdToItemCategoryName;
     private List<Wallet> walletList;
     private Map<YearMonth, BigInteger> mapMonthToMoney;
-    private int currentTransactionInd;
-    private YearMonth oldYearMonth;
-    private YearMonth currentYearMonth;
+    private final List<Integer> itemViewTypeList; // {TRANSACTION_VIEW, MONTH_VIEW, ...}
+    private final Map<Integer, Transaction> mapPositionToTransaction;
+    private final Map<Integer, YearMonth> mapPositionToMonth;
     private final NumberFormat moneyFormat;
 
     public HistoryAdapter(){
@@ -50,6 +53,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         itemList = new ArrayList<>();
         walletList = new ArrayList<>();
         mapMonthToMoney = new HashMap<>();
+        mapTransactionIdToItemCategoryName = new HashMap<>();
+        itemViewTypeList = new ArrayList<>();
+        mapPositionToTransaction = new HashMap<>();
+        mapPositionToMonth = new HashMap<>();
     }
 
     @Override
@@ -70,11 +77,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof TransactionViewHolder){
-            Transaction transaction = transactionList.get(currentTransactionInd);
-            currentTransactionInd--;
-            ((TransactionViewHolder) holder) .bindTransactionViewHolder(transaction, itemList, walletList, moneyFormat);
+            Transaction transaction = mapPositionToTransaction.get(position);
+            assert transaction != null;
+            String itemCategoryName = mapTransactionIdToItemCategoryName.get(transaction.transactionId);
+
+            ((TransactionViewHolder) holder).bindTransactionViewHolder(transaction, itemList, walletList, itemCategoryName, moneyFormat);
         }
         if(holder instanceof MonthViewHolder){
+            YearMonth currentYearMonth = mapPositionToMonth.get(position);
             ((MonthViewHolder) holder).bindMonthViewHolder(mapMonthToMoney, currentYearMonth, moneyFormat);
 
         }
@@ -83,34 +93,54 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
+        if(transactionList.size() == 0){
+            return 0;
+        }
         return transactionList.size() + mapMonthToMoney.size();
     }
 
     @Override
     public int getItemViewType(int position){
-        Log.d("History adapter", "postion:" + currentTransactionInd);
-        int result = TRANSACTION_VIEW;
+        return itemViewTypeList.get(position);
+    }
 
-        YearMonth nextYearMonth = null;
-        nextYearMonth = YearMonth.from(transactionList.get(currentTransactionInd).localDateTime);
+    private void buildItemViewTypeList(){
+        int currentTransactionInd = transactionList.size() - 1;
+        int position = transactionList.size() + mapPositionToMonth.size();
+        YearMonth currentYearMonth = null;
 
+        for(int p = position; p >= 0; p--){
+            int viewType = TRANSACTION_VIEW;
 
-        if(currentYearMonth == null){
-            result = MONTH_VIEW;
-        } else if(nextYearMonth.isBefore(currentYearMonth)){
-            result = MONTH_VIEW;
+            YearMonth nextYearMonth = YearMonth.from(transactionList.get(currentTransactionInd).localDateTime);
+
+            if(currentYearMonth == null){
+                viewType = MONTH_VIEW;
+                currentTransactionInd++;
+            } else if(nextYearMonth.isBefore(currentYearMonth)){
+                viewType = MONTH_VIEW;
+                currentTransactionInd++;
+            }
+            currentYearMonth = nextYearMonth;
+            this.itemViewTypeList.add(viewType);
+
+            //mapPositionToYearMonth
+            if(viewType == MONTH_VIEW){
+                this.mapPositionToMonth.put(p, currentYearMonth);
+            }
+            //mapPositionToTransaction
+            if(viewType == TRANSACTION_VIEW){
+                this.mapPositionToTransaction.put(p, transactionList.get(currentTransactionInd));
+            }
+            currentTransactionInd--;
         }
-        oldYearMonth = currentYearMonth;
-        currentYearMonth = nextYearMonth;
-        return result;
-//        return super.getItemViewType(position);
+        Collections.reverse(itemViewTypeList);
     }
 
     public void updateTransactionList(List<Transaction> transactionList){
         this.transactionList.clear();
         this.transactionList = transactionList;
-//        currentYearMonth = YearMonth.from(this.transactionList.get(0).localDateTime);
-        currentTransactionInd = transactionList.size() - 1;
+        buildItemViewTypeList();
         //TODO: (Normal) notifyDataSetChanged()
         notifyDataSetChanged();
     }
@@ -118,6 +148,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void updateItemList(List<Item> itemList){
         this.itemList.clear();
         this.itemList = itemList;
+        notifyDataSetChanged();
+    }
+
+    public void updateMapTransactionIdToItemCategoryName(Map<Long, String> mapTransactionIdToItemCategoryName){
+        this.mapTransactionIdToItemCategoryName.clear();
+        this.mapTransactionIdToItemCategoryName = mapTransactionIdToItemCategoryName;
         notifyDataSetChanged();
     }
 
@@ -145,7 +181,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.time_txt = view.findViewById(R.id.history_time_txt);
         }
 
-        public void bindTransactionViewHolder(Transaction transaction, List<Item> itemList, List<Wallet> walletList, NumberFormat moneyFormat){
+        public void bindTransactionViewHolder(Transaction transaction, List<Item> itemList, List<Wallet> walletList, String itemCategoryName, NumberFormat moneyFormat){
             // TODO: Add transfer between wallet
             if(transaction.transactionType.equals(TransactionType.EXPENSE)){
                 transactionType_txt.setText("-");
@@ -160,19 +196,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 transactionType_txt.setTextColor(Color.YELLOW);
                 money_txt.setTextColor(Color.YELLOW);
             }
-            //TODO: (Low) String.format
+            BigInteger amountOfMoney = transaction.amountOfMoney.getNumberStripped().toBigInteger();
+            BigInteger numberOfItem = BigInteger.valueOf(transaction.numberOfItem);
+            BigInteger total = amountOfMoney.multiply(numberOfItem);
+            money_txt.setText(moneyFormat.format(total));
 
-            money_txt.setText(moneyFormat.format(transaction.amountOfMoney.getNumberStripped().toBigInteger()));
-            for(Item item: itemList){
-                if(transaction.itemId.equals(item.itemId)){
-                    String itemCategory = item.itemCategory.toString();
-                    String firstChar = itemCategory.substring(0, 1);
-                    String remainingChar = itemCategory.substring(1).toLowerCase();
 
-                    itemCategory_txt.setText(String.format("%s%s", firstChar, remainingChar));
-                    break;
-                }
-            }
+            String firstChar = itemCategoryName.substring(0, 1);
+            String remainingChar = itemCategoryName.substring(1).toLowerCase();
+            itemCategory_txt.setText(String.format("%s%s", firstChar, remainingChar));
 
             for(Wallet wallet: walletList){
                 if(transaction.walletId.equals(wallet.walletId)){

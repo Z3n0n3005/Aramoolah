@@ -16,7 +16,7 @@ import androidx.navigation.Navigation;
 
 import com.example.aramoolah.R;
 import com.example.aramoolah.data.model.Item;
-import com.example.aramoolah.data.ItemCategory;
+import com.example.aramoolah.data.model.ItemCategory;
 import com.example.aramoolah.data.model.Session;
 import com.example.aramoolah.data.model.Transaction;
 import com.example.aramoolah.data.model.TransactionType;
@@ -31,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
@@ -70,11 +71,9 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
         }
 
         try {
-            // Run Once
-//            initializeDatabase();
             //Initialize
             List<Item> itemList = mAddTransactionViewModel.getCurrentUserItemList().getValue();
-            List<ItemCategory> categoryList = Arrays.asList(ItemCategory.values());
+            List<ItemCategory> categoryList = mAddTransactionViewModel.getCurrentUserItemCategoryList().getValue();
             // Transaction type transactionType_sp
             setUpItemCategorySpinner(categoryList);
             // Wallet Spinner walletSp
@@ -149,9 +148,9 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
                 List<Item> filteredItemList;
                 if(itemCategory != null){
                     if(item != null) {
-                        if (!itemCategory.equals(item.itemCategory)) {
+                        if (!Objects.equals(itemCategory.itemCategoryId, item.itemCategoryId)) {
                             try {
-                                filteredItemList = mAddTransactionViewModel.getItemFromItemCategory(itemCategory);
+                                filteredItemList = mAddTransactionViewModel.getItemList(itemCategory.itemCategoryId);
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
@@ -160,7 +159,7 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
                     }
                     if(item == null){
                         try {
-                            filteredItemList = mAddTransactionViewModel.getItemFromItemCategory(itemCategory);
+                            filteredItemList = mAddTransactionViewModel.getItemList(itemCategory.itemCategoryId);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
@@ -189,7 +188,12 @@ public class AddTransactionFragment extends Fragment implements AdapterView.OnIt
                 List<ItemCategory> filteredCategory = new ArrayList<>();
                 // Auto select
                 if(itemCategory == null && item != null){
-                    ItemCategory selectedItemCategory = item.itemCategory;
+                    ItemCategory selectedItemCategory = null;
+                    try {
+                        selectedItemCategory = mAddTransactionViewModel.getItemCategory(item.itemCategoryId);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     categorySp.setSelection(categoryList.indexOf(selectedItemCategory) + 1);
                 }
 

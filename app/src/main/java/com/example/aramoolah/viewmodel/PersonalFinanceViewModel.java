@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class PersonalFinanceViewModel extends AndroidViewModel {
     public User currentUser;
@@ -44,26 +45,27 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
 
     public PersonalFinanceViewModel(@NonNull Application application) throws InterruptedException {
         super(application);
+        PersonalFinanceDatabase instance = PersonalFinanceDatabase.getPersonalFinanceDatabase(application);
 
         //User
-        UserDao userDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).userDao();
+        UserDao userDao = instance.userDao();
         userRepository = new UserRepository(userDao);
 
 
         // Transaction
-        TransactionDao transactionDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).transactionDao();
+        TransactionDao transactionDao = instance.transactionDao();
         transactionRepository = new TransactionRepository(transactionDao);
 
         // Item
-        ItemDao itemDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).itemDao();
+        ItemDao itemDao = instance.itemDao();
         itemRepository = new ItemRepository(itemDao);
 
         // ItemCategory
-        ItemCategoryDao itemCategoryDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).itemCategoryDao();
+        ItemCategoryDao itemCategoryDao = instance.itemCategoryDao();
         itemCategoryRepository = new ItemCategoryRepository(itemCategoryDao);
 
         //Wallet
-        WalletDao walletDao = PersonalFinanceDatabase.getPersonalFinanceDatabase(application).walletDao();
+        WalletDao walletDao = instance.walletDao();
         walletRepository = new WalletRepository(walletDao);
     }
 
@@ -177,7 +179,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
         return foo.getResult();
     }
 
-    public List<Item> getItemFromItemCategory(ItemCategory itemCategory) throws InterruptedException {
+    public List<Item> getItemList(Integer itemCategoryId) throws InterruptedException {
         class Foo implements Runnable{
             final List<Item> currentItemList = getCurrentUserItemList().getValue();
             final List<Item> filteredItemList = new ArrayList<>();
@@ -189,7 +191,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
             public void run() {
                 assert currentItemList != null;
                 for(Item item: currentItemList){
-                    if(item.itemCategory.equals(itemCategory)) {
+                    if(Objects.equals(item.itemCategoryId, itemCategoryId)) {
                         filteredItemList.add(item);
                     }
                 }
@@ -241,7 +243,7 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
     }
 
     // Item Category
-    public MutableLiveData<List<ItemCategory>> getCurrentUserItemCategoryList{
+    public MutableLiveData<List<ItemCategory>> getCurrentUserItemCategoryList() throws InterruptedException {
         class Foo implements Runnable{
             MutableLiveData<List<ItemCategory>> currentUserItemCategory;
             @Override
@@ -251,19 +253,49 @@ public class PersonalFinanceViewModel extends AndroidViewModel {
                     List<Integer> itemCategoryIdList = currentUserItemCategoryIdMap.get(currentUser.userId);
                     List<ItemCategory> itemCategoryList = new ArrayList<>();
                     if(itemCategoryIdList != null){
-                        for (Long transactionId : itemCategoryIdList) {
+                        for (Integer itemCategoryId : itemCategoryIdList) {
                             try {
-                                itemCategoryList.add(getTransaction(transactionId));
+                                itemCategoryList.add(getItemCategory(itemCategoryId));
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
                         }
                     }
 
-                    currentUserTransaction = new MutableLiveData<>(transactionList);
+                    currentUserItemCategory = new MutableLiveData<>(itemCategoryList);
+                } else {
+                    currentUserItemCategory = currentUserItemCategoryList;
                 }
             }
+
+            public MutableLiveData<List<ItemCategory>> getResult(){
+                return currentUserItemCategory;
+            }
         }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
+    }
+
+    public ItemCategory getItemCategory(Integer itemCategoryId) throws InterruptedException {
+        class Foo implements Runnable{
+            ItemCategory result;
+            @Override
+            public void run() {
+                result = itemCategoryRepository.getItemCategory(itemCategoryId);
+            }
+
+            public ItemCategory getResult(){
+                return result;
+            }
+        }
+        Foo foo = new Foo();
+        Thread thread = new Thread(foo);
+        thread.start();
+        thread.join();
+        return foo.getResult();
     }
 
     // Wallet

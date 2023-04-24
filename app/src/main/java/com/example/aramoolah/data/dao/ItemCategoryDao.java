@@ -23,8 +23,10 @@ public interface ItemCategoryDao {
     @Query("SELECT * FROM item_category_table WHERE itemCategoryId = :itemCategoryId")
     ItemCategory getItemCategory(Integer itemCategoryId);
 
-    @Query("SELECT itemCategoryName FROM item_category_table WHERE itemCategoryId = :sitemCategoryId")
+    @Query("SELECT itemCategoryName FROM item_category_table WHERE itemCategoryId = :itemCategoryId")
     String getItemCategoryName(Integer itemCategoryId);
+    @Query("SELECT itemCategoryId FROM item_category_table WHERE userId = :userId AND itemCategoryName = :itemCategoryName")
+    Integer getItemCategoryId(Integer userId, String itemCategoryName);
 
     @MapInfo(keyColumn = "userId", valueColumn = "itemCategoryId")
     @Query("SELECT * FROM item_category_table ic JOIN user_table u ON ic.userId = u.userId")

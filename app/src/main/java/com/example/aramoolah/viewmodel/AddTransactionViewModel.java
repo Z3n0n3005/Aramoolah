@@ -56,14 +56,4 @@ public class AddTransactionViewModel extends PersonalFinanceViewModel{
             walletRepository.updateTotalAmount(transaction.walletId, updatedWalletMoney);
         }).start();
     }
-
-    public String getItemCategoryName(Item item){
-        class Foo implements Runnable{
-
-            @Override
-            public void run() {
-
-            }
-        }
-    }
 }

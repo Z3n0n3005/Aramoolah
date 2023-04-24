@@ -37,7 +37,7 @@ public class AddItemFragment extends Fragment {
         addItem_et = binding.addItemEt;
 
         SharedPreferences itemCategoryPref = getActivity().getSharedPreferences("itemCategory", Context.MODE_PRIVATE);
-        itemCategory = ItemCategory.valueOf(itemCategoryPref.getString("itemCategory", "OTHER"));
+        int itemCategoryId = itemCategoryPref.getInt("itemCategory", -1);
 
         addItem_btn.setOnClickListener(view1 -> addItem());
     }
